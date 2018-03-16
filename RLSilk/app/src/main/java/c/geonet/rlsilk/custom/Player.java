@@ -1,5 +1,8 @@
 package c.geonet.rlsilk.custom;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -136,5 +139,58 @@ public class Player {
 
     public void setNextUpdate(long nextUpdate) {
         this.nextUpdate = nextUpdate;
+    }
+
+    public static Player fromJSON(JSONObject response){
+        Player player = new  Player();
+        try {
+            if (response.has("displayName"))
+                player.setName(response.getString("displayName"));
+            if (response.has("avatar"))
+                player.setAvatarUrl(response.getString("avatar"));
+            if (response.has("updatedAt"))
+                player.setUpdated(response.getLong("updatedAt"));
+            if (response.has("nextUpdateAt"))
+                player.setNextUpdate(response.getLong("nextUpdateAt"));
+            if (response.has("stats")) {
+                JSONObject stats = response.getJSONObject("stats");
+                player.setWins(stats.getInt("wins"));
+                player.setGoals(stats.getInt("goals"));
+                player.setMvps(stats.getInt("mvps"));
+                player.setSaves(stats.getInt("saves"));
+                player.setShots(stats.getInt("shots"));
+                player.setAssists(stats.getInt("assists"));
+            }
+            if (response.has("profileUrl"))
+                player.setProfileUrl(response.getString("profileUrl"));
+            if (response.has("rankedSeasons")) {
+                JSONObject season = response.getJSONObject("rankedSeasons");
+                int i = 0;
+                while (season.has("" + i + 1))
+                    i++;
+                season = season.getJSONObject("" + i);
+                JSONObject duel = season.getJSONObject("10");
+                JSONObject duo = season.getJSONObject("11");
+                JSONObject solo = season.getJSONObject("12");
+                JSONObject standard = season.getJSONObject("13");
+                player.currentSeason().setStats(
+                        new Ranking(solo.getInt("rankedPoints"), solo.getInt("matchesPlayed"), solo.getInt("tier"), solo.getInt("division"))
+                        , new Ranking(duel.getInt("rankedPoints"), duel.getInt("matchesPlayed"), duel.getInt("tier"), duel.getInt("division"))
+                        , new Ranking(duo.getInt("rankedPoints"), duo.getInt("matchesPlayed"), duo.getInt("tier"), duo.getInt("division"))
+                        , new Ranking(standard.getInt("rankedPoints"), standard.getInt("matchesPlayed"), standard.getInt("tier"), standard.getInt("division"))
+                        , player.getUpdated());
+            }
+        }catch (JSONException error){
+
+        }finally{
+            return player;
+        }
+    }
+
+    public Player mergeWithPlayer(Player recent){
+        for(int i = 0; i< recent.getSeasons().size();i++) {
+            recent.getSeasons().get(i).getSolo().putAll(this.seasons.get(i).getSolo());
+        }
+        return recent;
     }
 }
