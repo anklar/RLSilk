@@ -1,4 +1,4 @@
-package c.geonet.rlsilk;
+package com.example.ravi.rlcomp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
