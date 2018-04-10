@@ -6,7 +6,16 @@ import java.util.HashMap
  * Created by Ravi on 15.03.2018.
  */
 
-class Season(val number: Int, solo: Ranking, duel: Ranking, duo: Ranking, standard: Ranking, timestamp: Long) {
+class Season(var timestampList:ArrayList<Timestamp>){
+
+
+
+
+
+
+
+
+/*class Season(val number: Int, solo: Ranking, duel: Ranking, duo: Ranking, standard: Ranking, timestamp: Long) {
     val solo: HashMap<Long, Ranking>
     val duel: HashMap<Long, Ranking>
     val duo: HashMap<Long, Ranking>
@@ -44,5 +53,5 @@ class Season(val number: Int, solo: Ranking, duel: Ranking, duo: Ranking, standa
 
     fun setStandard(standard: Ranking, timestamp: Long) {
         this.standard[timestamp] = standard
-    }
+    }*/
 }

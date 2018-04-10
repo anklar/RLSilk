@@ -1,4 +1,4 @@
 package com.example.ravi.rlcomp.custom
 
-class Timestamp(var solo:Ranking, var duo:Ranking, var standard:Ranking, var duel:Ranking,
-                var shots:Int, var goals:Int, var saves:Int, var assists:Int, var wins:Int, mvps:Int)
+class Timestamp(val time:Long, val matchesPlayed:Int, val rankingList:Array<Ranking>,
+                val shots:Int, val goals:Int, val saves:Int, val assists:Int, val wins:Int, val mvps:Int)

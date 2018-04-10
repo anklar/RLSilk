@@ -40,7 +40,7 @@ class PlayerAcitivty : AppCompatActivity() {
         text = findViewById(R.id.text)
         initDummy()
         button.setOnClickListener {
-                val request = object : JsonArrayRequest(Request.Method.GET, "https://api.rocketleaguestats.com/v1/data/platforms", null, { response -> text!!.text = response.toString() }, { error ->
+                /*val request = object : JsonArrayRequest(Request.Method.GET, "https://api.rocketleaguestats.com/v1/data/platforms", null, { response -> text!!.text = response.toString() }, { error ->
                     android.util.Log.e("tstEx", error.stackTrace.toString())
                     error.printStackTrace()
                 }) {
@@ -51,7 +51,8 @@ class PlayerAcitivty : AppCompatActivity() {
                         return params
                     }
                 }
-                req!!.add(request)
+                req!!.add(request) */
+            requestPlayerStats()
         }
     }
 
@@ -60,7 +61,7 @@ class PlayerAcitivty : AppCompatActivity() {
         //Icepick.saveInstanceState<StatActivity>(this, outState)
     }
 
-    fun searchPlayers(keyword: String) {
+    /*fun searchPlayers(keyword: String) {
         val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "search/players?display_name=" + keyword, null,
                 { response ->
                     try {
@@ -83,10 +84,10 @@ class PlayerAcitivty : AppCompatActivity() {
                 return params
             }
         }
-    }
+    }*/
 
     private fun requestPlayerStats() {
-        val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "player?unique_id2=" + player!!.id + "&platform_id=" + player!!.platform, null,
+        val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "player?unique_id=" + player!!.id + "&platform_id=" + player!!.platform, null,
                 { response ->
                     try {
                         updatePlayerStats(response)
@@ -106,7 +107,9 @@ class PlayerAcitivty : AppCompatActivity() {
     }
 
     fun updatePlayerStats(playerson: JSONObject) {
-        this.player = player!!.mergeWithPlayer(Player.fromJSON(playerson))
+        this.player!!.update(playerson)
+        val player = this.player
+        text?.text = player?.toText()
     }
 
 
