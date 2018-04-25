@@ -9,7 +9,7 @@ class Player {
     var id: String? = null
     var name: String? = null
     var platform: Int = 0
-    var avatarUrl: String? = null
+    var avatarUrl: String = ""
     var profileUrl: String? = null
     var wins: Int = 0
     var goals: Int = 0
@@ -34,12 +34,12 @@ class Player {
         return bob.toString()
 
     }
-    fun update(playerson : JSONObject){
+    fun update(playerson : JSONObject):Timestamp?{
         try {
             if (playerson.has("displayName"))
                 this.name = playerson.getString("displayName")
             if (playerson.has("avatar"))
-                this.avatarUrl = playerson.getString("avatar")
+                this.avatarUrl = playerson.getString("avatar").replace("\\","")
             if (playerson.has("updatedAt"))
                 this.updated = playerson.getLong("updatedAt")
             if (playerson.has("nextUpdateAt"))
@@ -54,7 +54,8 @@ class Player {
                 this.assists = stats.getInt("assists")
             }
             if (playerson.has("profileUrl"))
-                this.profileUrl = playerson.getString("profileUrl")
+                this.profileUrl = playerson.getString("profileUrl").replace("\\","")
+            var stamp:Timestamp? = null
             if (playerson.has("rankedSeasons")) {
                 var allSeasons = playerson.getJSONObject("rankedSeasons")
                 for (key: String in allSeasons.keys()) {
@@ -63,18 +64,19 @@ class Player {
                         var matchesPlayed = processedSeason.getJSONObject("" + 10).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 11).getInt("matchesPlayed")
                         +processedSeason.getJSONObject("" + 12).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 13).getInt("matchesPlayed")
                         var rankings = getRankings(processedSeason)
+                        stamp = Timestamp(this.updated, matchesPlayed, rankings, shots, goals,saves, assists,wins, mvps)
                         if (key.toInt() > currentSeason)
-                            seasons[key.toInt()] = TimestampList(Timestamp(this.updated, matchesPlayed, rankings, shots, goals,
-                                    saves, assists,wins, mvps))
+                            seasons[key.toInt()] = TimestampList(stamp)
                         else {
-                            seasons[key.toInt()]!!.add(Timestamp(this.updated, matchesPlayed, rankings, shots, goals,
-                                    saves, assists,wins, mvps))
+                            seasons[key.toInt()]!!.add(stamp)
                         }
                     }
                 }
             }
+            return stamp
         } catch (error: JSONException) {
             android.util.Log.e("@playerUpdate","Parsing of the JSONResponse for updating the player failed with an JSONException " +error.message )
+           return null
         }
     }
     private fun getRankings(processedSeason:JSONObject):Array<Ranking>{
