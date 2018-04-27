@@ -21,6 +21,13 @@ class Player {
     var updated: Long = 0
     var nextUpdate: Long = 0
     var currentSeason: Int = 0
+    var oldestRecord: Long = 0
+        get() {
+            if(oldestRecord==0L)
+                oldestRecord = seasons.values.first().first().time
+            return oldestRecord
+        }
+
 
     fun toText():String{
         var bob:StringBuilder = StringBuilder()
@@ -34,6 +41,10 @@ class Player {
         return bob.toString()
 
     }
+
+    /**
+     * updates this player with fresh data from the JSON
+     */
     fun update(playerson : JSONObject):Timestamp?{
         try {
             if (playerson.has("displayName"))
@@ -79,7 +90,20 @@ class Player {
            return null
         }
     }
+
+    /**
+     * finds the last timestamp of the last active day before today
+     */
+    fun getDayStartingStamp():Timestamp{
+        //TODO return acutal latest stamp of the last day available
+        return seasons.values.last().first()
+    }
+
+    /**
+     * parses the JSON into an array containing queue infos in the order "duel,duo,solo,standard"
+     */
     private fun getRankings(processedSeason:JSONObject):Array<Ranking>{
+        // 10 =  duel , 11 = duo, 12 = solo, 13 = standard
         return arrayOf(Ranking(processedSeason.getJSONObject(""+10).getInt("rankPoints"),
                 processedSeason.getJSONObject(""+10).getInt("tier"),
                 processedSeason.getJSONObject(""+10).getInt("division")),

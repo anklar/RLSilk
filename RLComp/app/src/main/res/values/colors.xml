@@ -3,4 +3,6 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303f9f</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="currentShotPercGraph">#5Fa161</color>
+    <color name="totalShotPercGraph">#F42A3B</color>
 </resources>

@@ -20,6 +20,7 @@ import butterknife.ButterKnife
 import com.bumptech.glide.Glide
 import com.example.ravi.rlcomp.R.drawable.*
 import com.example.ravi.rlcomp.custom.Timestamp
+import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import java.lang.Thread.sleep
@@ -32,6 +33,9 @@ class PlayerActivity : AppCompatActivity() {
     private var text: TextView? = null
     private lateinit var player: Player
     private val BASEURL = "https://api.rocketleaguestats.com/v1/"
+
+    private lateinit var totalShotPercentageDataSet:LineDataSet
+    private lateinit var currentShotPercentageDataSet:LineDataSet
 
     private var dummyCount = 1
 
@@ -172,36 +176,58 @@ class PlayerActivity : AppCompatActivity() {
         userName.text = this.player.name
         Glide.with(this).load(player!!.avatarUrl).into(profilePic)
         if(stamp!=null) {
+            //updated image and text for each rank
             setRankVisuals(duelImg, duelTxt, stamp.rankingList[0].tier, stamp.rankingList[0].div)
             setRankVisuals(duoImg, duoTxt, stamp.rankingList[1].tier, stamp.rankingList[1].div)
-            setRankVisuals(standardImg, standardTxt, stamp.rankingList[2].tier, stamp.rankingList[2].div)
-            setRankVisuals(soloImg, soloTxt, stamp.rankingList[3].tier, stamp.rankingList[3].div)
+            setRankVisuals(soloImg, soloTxt, stamp.rankingList[2].tier, stamp.rankingList[2].div)
+            setRankVisuals(standardImg, standardTxt, stamp.rankingList[3].tier, stamp.rankingList[3].div)
+            //set MMR
+            duelMmr.text = "MMR: "+stamp.rankingList[0].mmr
+            duoMmr.text = "MMR: "+stamp.rankingList[1].mmr
+            soloMmr.text = "MMR: "+stamp.rankingList[2].mmr
+            standardMmr.text = "MMR: "+stamp.rankingList[3].mmr
+            //update chart
             addChartEntries(stamp)
         }
     }
 
     /**
+     * returns the newest timestamp of the last day, to calculate daily performance
+     */
+    private fun getDayStartingStamp():Timestamp{
+        return player.getDayStartingStamp()
+    }
+
+    /**
      * puts the data from the timestamp into all charts
      */
-    private fun addChartEntries(stamp:Timestamp){
+    private fun addChartEntries(recentStamp:Timestamp){
         //TODO assign correct Values for x Axis
         val x = (dummyCount).toFloat()
         dummyCount++
 
+        if(shotpercChart.data!=null){
+            //add points to existing charts
+            totalShotPercentageDataSet.addEntry(Entry(x,recentStamp.getTotalShotPercentage()))
+            currentShotPercentageDataSet.addEntry(Entry(x,recentStamp.getShotPerc(getDayStartingStamp())))
+        }else{
+            //initalize Chart
+            //create each graph and set colors
+            totalShotPercentageDataSet = LineDataSet(arrayListOf(Entry(x,recentStamp.getTotalShotPercentage())), "Total Shot Percentage")
+            totalShotPercentageDataSet.color = R.color.totalShotPercGraph
+            totalShotPercentageDataSet.valueTextColor = R.color.colorPrimaryDark
 
-        val y = stamp.goals.toFloat()/stamp.shots.toFloat()
-        android.util.Log.e("@ChartEntry", "Entry at point " +x +" : "+y +" based on shots: " +stamp.shots +" and goals "+stamp.goals)
-        if(shotpercChart.data!=null)
-            //add new entry into chart
-            shotpercChart.data.dataSets[0].addEntry(Entry(x,y))
-        else{
-            //initalize chart and add entry afterwards
-            val dataSet = LineDataSet(arrayListOf(Entry(x,y)), "Label")
-            dataSet.color = (R.color.bright_foreground_inverse_material_light)
-            dataSet.valueTextColor =(R.color.bright_foreground_inverse_material_light)
-            val lineData = LineData(dataSet)
-            shotpercChart.data = lineData
-            shotpercChart.xAxis.axisMinimum = 1f
+            currentShotPercentageDataSet = LineDataSet(arrayListOf(Entry(x,recentStamp.getShotPerc(getDayStartingStamp()))), "Total Shot Percentage")
+            currentShotPercentageDataSet.color = R.color.currentShotPercGraph
+            currentShotPercentageDataSet.valueTextColor = R.color.colorPrimaryDark
+
+            //add graphs to the chart
+            shotpercChart.data = LineData()
+            shotpercChart.data.addDataSet(totalShotPercentageDataSet)
+            shotpercChart.data.addDataSet(currentShotPercentageDataSet)
+
+            //alter axises
+            shotpercChart.xAxis.axisMinimum = 1f        //TODO player.oldestRecord
             shotpercChart.xAxis.setDrawAxisLine(true)
             shotpercChart.xAxis.setDrawLabels(true)
             shotpercChart.xAxis.axisMaximum = 25f       //TODO correct scale, maybe dynamic
@@ -211,8 +237,12 @@ class PlayerActivity : AppCompatActivity() {
 
             shotpercChart.axisLeft.axisMinimum = 0f
             shotpercChart.axisLeft.axisMaximum = 1f
+
+            shotpercChart.description = Description()
         }
-        shotpercChart.invalidate()      //refresh chart
+        //refresh chart to draw updates
+        shotpercChart.notifyDataSetChanged()
+        shotpercChart.invalidate()
     }
 
     /*fun searchPlayers(keyword: String) {
