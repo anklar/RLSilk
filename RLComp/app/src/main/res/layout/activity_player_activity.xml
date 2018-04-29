@@ -74,14 +74,6 @@
                     android:gravity="top|center"
                     android:text="Unranked" />
 
-                <ImageView
-                    android:id="@+id/standardImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.4"
-                    android:scaleType="fitStart"
-                    app:srcCompat="@drawable/rank0" />
-
                 <TextView
                     android:id="@+id/standardMmr"
                     android:layout_width="match_parent"
@@ -89,6 +81,14 @@
                     android:layout_weight="1"
                     android:gravity="top|center"
                     android:text="MMR: 1337" />
+
+                <ImageView
+                    android:id="@+id/standardImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:scaleType="fitStart"
+                    app:srcCompat="@drawable/rank0" />
 
             </LinearLayout>
 
@@ -114,14 +114,6 @@
                     android:gravity="top|center"
                     android:text="Unranked" />
 
-                <ImageView
-                    android:id="@+id/duoImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.4"
-                    android:scaleType="fitStart"
-                    app:srcCompat="@drawable/rank0" />
-
                 <TextView
                     android:id="@+id/duoMmr"
                     android:layout_width="match_parent"
@@ -129,6 +121,14 @@
                     android:layout_weight="1"
                     android:gravity="top|center"
                     android:text="MMR: 1337" />
+
+                <ImageView
+                    android:id="@+id/duoImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:scaleType="fitStart"
+                    app:srcCompat="@drawable/rank0" />
 
             </LinearLayout>
 
@@ -154,14 +154,6 @@
                     android:gravity="top|center"
                     android:text="Unranked" />
 
-                <ImageView
-                    android:id="@+id/duelImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.4"
-                    android:scaleType="fitStart"
-                    app:srcCompat="@drawable/rank0" />
-
                 <TextView
                     android:id="@+id/duelMmr"
                     android:layout_width="match_parent"
@@ -169,6 +161,14 @@
                     android:layout_weight="1"
                     android:gravity="top|center"
                     android:text="MMR: 1337" />
+
+                <ImageView
+                    android:id="@+id/duelImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:scaleType="fitStart"
+                    app:srcCompat="@drawable/rank0" />
 
             </LinearLayout>
 
@@ -194,14 +194,6 @@
                     android:gravity="top|center"
                     android:text="Unranked" />
 
-                <ImageView
-                    android:id="@+id/soloImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.4"
-                    android:scaleType="fitStart"
-                    app:srcCompat="@drawable/rank0" />
-
                 <TextView
                     android:id="@+id/soloMmr"
                     android:layout_width="match_parent"
@@ -209,6 +201,14 @@
                     android:layout_weight="1"
                     android:gravity="top|center"
                     android:text="MMR: 1337" />
+
+                <ImageView
+                    android:id="@+id/soloImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:scaleType="fitStart"
+                    app:srcCompat="@drawable/rank0" />
 
             </LinearLayout>
 

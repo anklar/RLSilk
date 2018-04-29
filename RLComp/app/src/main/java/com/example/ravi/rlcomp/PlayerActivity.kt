@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import java.lang.Thread.sleep
 import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.utils.ColorTemplate
 import java.util.*
 
 
@@ -33,7 +34,10 @@ class PlayerActivity : AppCompatActivity() {
     private var text: TextView? = null
     private lateinit var player: Player
     private val BASEURL = "https://api.rocketleaguestats.com/v1/"
+    private val currentShotPercColor = "#5Fa161"
+    private val totalShotPercColor = "#F42A3B"
 
+    private var today:Float = 0f
     private lateinit var totalShotPercentageDataSet:LineDataSet
     private lateinit var currentShotPercentageDataSet:LineDataSet
 
@@ -50,21 +54,7 @@ class PlayerActivity : AppCompatActivity() {
         Glide.with(this).load(player.avatarUrl).into(profilePic)
         requestPlayerStats()
         //updateUI()
-       /* button.setOnClickListener {
-                val request = object : JsonArrayRequest(Request.Method.GET, "https://api.rocketleaguestats.com/v1/data/platforms", null, { response -> text!!.text = response.toString() }, { error ->
-                    android.util.Log.e("tstEx", error.stackTrace.toString())
-                    error.printStackTrace()
-                }) {
-                    @Throws(AuthFailureError::class)
-                    override fun getHeaders(): Map<String, String> {
-                        val params = HashMap<String, String>()
-                        params["Authorization"] = "ENG5EKOIR4BBEJGSAF5NW068RH5BU2VU"
-                        return params
-                    }
-                }
-                req!!.add(request)
-            requestPlayerStats()
-        }*/
+        today = getDayfromLong().toInt().toFloat()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
@@ -197,29 +187,46 @@ class PlayerActivity : AppCompatActivity() {
     private fun getDayStartingStamp():Timestamp{
         return player.getDayStartingStamp()
     }
+    companion object {
+        /**
+         * converts the given Long value into day since UNIX time
+         */
+        fun getDayfromLong(timeMillis: Long = System.currentTimeMillis()): Float {
+            return (timeMillis.toDouble() / 86400000).toFloat()
+        }
 
+    }
     /**
      * puts the data from the timestamp into all charts
      */
     private fun addChartEntries(recentStamp:Timestamp){
         //TODO assign correct Values for x Axis
-        val x = (dummyCount).toFloat()
+       // val x = (dummyCount).toFloat()
         dummyCount++
+        var dummyY = Random().nextFloat()
 
+
+
+        val x = getDayfromLong(recentStamp.time)-today
         if(shotpercChart.data!=null){
             //add points to existing charts
-            totalShotPercentageDataSet.addEntry(Entry(x,recentStamp.getTotalShotPercentage()))
-            currentShotPercentageDataSet.addEntry(Entry(x,recentStamp.getShotPerc(getDayStartingStamp())))
+ /*TODO reactivate actual values           totalShotPercentageDataSet.addEntry(Entry(x,recentStamp.getTotalShotPercentage()))
+            currentShotPercentageDataSet.addEntry(Entry(x,recentStamp.getShotPerc(getDayStartingStamp()))) */
+            totalShotPercentageDataSet.addEntry(Entry(x,dummyY))
+            currentShotPercentageDataSet.addEntry(Entry(x,dummyY/2))
         }else{
             //initalize Chart
             //create each graph and set colors
-            totalShotPercentageDataSet = LineDataSet(arrayListOf(Entry(x,recentStamp.getTotalShotPercentage())), "Total Shot Percentage")
-            totalShotPercentageDataSet.color = R.color.totalShotPercGraph
-            totalShotPercentageDataSet.valueTextColor = R.color.colorPrimaryDark
 
-            currentShotPercentageDataSet = LineDataSet(arrayListOf(Entry(x,recentStamp.getShotPerc(getDayStartingStamp()))), "Total Shot Percentage")
-            currentShotPercentageDataSet.color = R.color.currentShotPercGraph
-            currentShotPercentageDataSet.valueTextColor = R.color.colorPrimaryDark
+            //TODO totalShotPercentageDataSet = LineDataSet(arrayListOf(Entry(x,recentStamp.getTotalShotPercentage())), "Total Shot Percentage")
+            totalShotPercentageDataSet = LineDataSet(arrayListOf(Entry(x,dummyY)), "Total Shot Percentage")
+            totalShotPercentageDataSet.color = ColorTemplate.rgb(totalShotPercColor)
+            totalShotPercentageDataSet.setCircleColor(ColorTemplate.rgb(totalShotPercColor))
+
+            //TODO currentShotPercentageDataSet = LineDataSet(arrayListOf(Entry(x,recentStamp.getShotPerc(getDayStartingStamp()))), "Total Shot Percentage")
+            currentShotPercentageDataSet = LineDataSet(arrayListOf(Entry(x,dummyY/2)), "Total Shot Percentage")
+            currentShotPercentageDataSet.color = ColorTemplate.rgb(currentShotPercColor)
+            currentShotPercentageDataSet.setCircleColor(ColorTemplate.rgb(currentShotPercColor))
 
             //add graphs to the chart
             shotpercChart.data = LineData()
@@ -227,10 +234,10 @@ class PlayerActivity : AppCompatActivity() {
             shotpercChart.data.addDataSet(currentShotPercentageDataSet)
 
             //alter axises
-            shotpercChart.xAxis.axisMinimum = 1f        //TODO player.oldestRecord
+            shotpercChart.xAxis.axisMinimum = -30f
             shotpercChart.xAxis.setDrawAxisLine(true)
             shotpercChart.xAxis.setDrawLabels(true)
-            shotpercChart.xAxis.axisMaximum = 25f       //TODO correct scale, maybe dynamic
+            shotpercChart.xAxis.axisMaximum = 30f
 
             shotpercChart.axisRight.setDrawLabels(false)
             shotpercChart.axisRight.setDrawGridLines(false)

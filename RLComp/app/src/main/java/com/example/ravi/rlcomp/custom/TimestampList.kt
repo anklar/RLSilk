@@ -1,22 +1,29 @@
 package com.example.ravi.rlcomp.custom
 
+import com.example.ravi.rlcomp.PlayerActivity
+
 class TimestampList : ArrayList<Timestamp>{
     constructor(): super()
     constructor(item:Timestamp):super(){
         this.add(item)
     }
 
-    fun getByDay(day:Long):TimestampList{
-        var result = TimestampList()
-        for( stamp:Timestamp in this){
-            if(stamp.time in day..day+86400000)
-                result.add(stamp)
+    /**
+     * gets the newest timestamp before the given day
+     */
+    fun getLastStampBefore(day:Float):Timestamp?{
+        if (PlayerActivity.Companion.getDayfromLong(this.last().time)< day) //check if day is beyond this list
+            return null
+        else{
+            //find a stamp before the day with binary search
+            var max = this.size
+            var min = 0
+            var index = max/2
+            while(index != max){        //still searching
+                if()//TODO implement binary search
+            }
         }
-        return result
     }
-     fun getShotPercentage():Double{
-         return getGoals().toDouble()/getShots()
-     }
 
     fun getGoals():Int{
         if(size==1)return this[0].goals

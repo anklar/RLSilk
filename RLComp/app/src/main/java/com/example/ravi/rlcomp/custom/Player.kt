@@ -75,7 +75,7 @@ class Player {
                         var matchesPlayed = processedSeason.getJSONObject("" + 10).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 11).getInt("matchesPlayed")
                         +processedSeason.getJSONObject("" + 12).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 13).getInt("matchesPlayed")
                         var rankings = getRankings(processedSeason)
-                        stamp = Timestamp(this.updated, matchesPlayed, rankings, shots, goals,saves, assists,wins, mvps)
+                        stamp = Timestamp(this.updated*1000, matchesPlayed, rankings, shots, goals,saves, assists,wins, mvps)
                         if (key.toInt() > currentSeason)
                             seasons[key.toInt()] = TimestampList(stamp)
                         else {
