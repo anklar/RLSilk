@@ -5,9 +5,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import com.android.volley.AuthFailureError
@@ -25,10 +23,14 @@ import java.util.HashMap
 
 class PlayerOverview : AppCompatActivity() {
 
+
+    //TODO Implement Player Search
+    //TODO Make Timestampcomparison work
 //------------------------------------------------------
     private val BASEURL = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
-    private var player = Player("76561198026480940","Ravi,",1,"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/5e/5ea978e3b5b400fa44c036597f3f34d479e81d03_full.jpg")
+    //private var player = Player("76561198026480940","Ravi,",1,"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/5e/5ea978e3b5b400fa44c036597f3f34d479e81d03_full.jpg")
+    private var player = Player("76561198033227582","Placeholder,",1,"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/5e/5ea978e3b5b400fa44c036597f3f34d479e81d03_full.jpg")
     private val playerFragment = PlayerFragment.newInstance()
     private val graphFragment = GraphFragment.newInstance()
 
@@ -58,7 +60,7 @@ class PlayerOverview : AppCompatActivity() {
     fun updatePlayerStats(playerson: JSONObject) {
         android.util.Log.e("@update",playerson.toString())
         val stamp = this.player.update(playerson)
-        playerFragment.updateUI(stamp)
+        playerFragment.updateUI(stamp,this.player)
         graphFragment.addChartEntries(stamp,player.getDayStartingStamp())
     }
 
@@ -96,11 +98,6 @@ class PlayerOverview : AppCompatActivity() {
         setContentView(R.layout.activity_player_overview)
 
         req = Volley.newRequestQueue(this.applicationContext)
-        //val tabLayout: TabLayout = findViewById(R.id.tab_layout)
-
-        //val viewPager: ViewPager = findViewById(R.id.view_pager)
-
-        //val adapter = SampleAdapter(supportFragmentManager)
 
         viewPager.adapter = PagerAdapter(supportFragmentManager,2)
         tabLayout.setupWithViewPager(viewPager)
@@ -157,6 +154,12 @@ class PlayerOverview : AppCompatActivity() {
         override fun getCount(): Int {
             return tabCount
         }
+        override fun getPageTitle(position: Int): CharSequence = when (position) {
+            0 -> "Player"
+            1 -> "Statistic"
+            else -> ""
+        }
+
     }
 
 

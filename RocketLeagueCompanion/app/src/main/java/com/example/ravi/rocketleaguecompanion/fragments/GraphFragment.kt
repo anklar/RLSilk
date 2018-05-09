@@ -9,17 +9,13 @@ import android.view.ViewGroup
 import com.example.ravi.rlcomp.custom.Player
 import com.example.ravi.rlcomp.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
-import kotlinx.android.synthetic.main.fragment_graph.*
 import java.util.*
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-
-
+import kotlinx.android.synthetic.main.fragment_graph.*
 
 
 class GraphFragment : Fragment() {
