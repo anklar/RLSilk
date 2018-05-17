@@ -20,7 +20,7 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
     var oldestRecord: Long = 0
         get() {
             if (oldestRecord == 0L)
-                oldestRecord = seasons.values.first().first().time
+                oldestRecord = seasons.values.first().
             return oldestRecord
         }
 
@@ -32,7 +32,7 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
             bob.append(" Season: ")
             bob.append(key)
             bob.append("    ")
-            bob.append(seasons[key]?.getGoals())
+            //bob.append(seasons[key]?.getGoals())
         }
         return bob.toString()
 
