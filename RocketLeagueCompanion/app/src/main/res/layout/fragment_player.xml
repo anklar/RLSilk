@@ -7,379 +7,433 @@
     tools:context=".fragments.PlayerFragment">
 
 
-    <ImageView
-        android:id="@+id/profilePic"
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="16dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
         android:layout_marginTop="16dp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/goals"
-        app:layout_constraintBottom_toTopOf="@+id/duelImg"
-        app:layout_constraintEnd_toStartOf="@+id/userName"
+        app:layout_constraintBottom_toTopOf="@+id/cardView2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_weight="0.5">
 
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        android:textAlignment="viewStart"
-        android:textSize="36sp"
-        app:layout_constraintBottom_toBottomOf="@+id/profilePic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profilePic"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/duelImg"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:padding="0dp"
-        android:src="@drawable/rank0"
-        app:layout_constraintBottom_toTopOf="@+id/duelLabel"
-        app:layout_constraintEnd_toStartOf="@+id/duoImg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilePic" />
+            <ImageView
+                android:id="@+id/profilePic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:foregroundGravity="left"
+                android:padding="8dp"
+                android:src="@drawable/goals"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="16dp" />
 
-    <ImageView
-        android:id="@+id/duoImg"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:padding="0dp"
-        android:src="@drawable/rank0"
-        app:layout_constraintBottom_toTopOf="@+id/duoLabel"
-        app:layout_constraintEnd_toStartOf="@+id/standardImg"
-        app:layout_constraintStart_toEndOf="@+id/duelImg"
-        app:layout_constraintTop_toTopOf="@+id/duelImg"
-        app:layout_constraintVertical_bias="0.0" />
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="TextView"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                tools:layout_editor_absoluteX="192dp"
+                tools:layout_editor_absoluteY="64dp" />
 
-    <ImageView
-        android:id="@+id/standardImg"
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:padding="0dp"
-        android:src="@drawable/rank0"
-        app:layout_constraintBottom_toTopOf="@+id/duelLabel"
-        app:layout_constraintEnd_toStartOf="@+id/soloImg"
-        app:layout_constraintStart_toEndOf="@+id/duoImg"
-        app:layout_constraintTop_toTopOf="@+id/duelImg"
-        app:layout_constraintVertical_bias="0.00999999" />
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/cardView6"
+        app:layout_constraintEnd_toStartOf="@+id/cardView4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintVertical_weight="1">
 
-    <ImageView
-        android:id="@+id/soloImg"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/duelImg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:src="@drawable/rank0"
+                tools:layout_editor_absoluteY="192dp" />
+
+            <TextView
+                android:id="@+id/duelLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1v1Duel"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteY="212dp" />
+
+            <TextView
+                android:id="@+id/duelMmr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1337 MMR"
+                android:textAlignment="center"
+                app:layout_column="0"
+                app:layout_row="1"
+                tools:layout_editor_absoluteY="230dp" />
+
+            <TextView
+                android:id="@+id/duelTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Potato"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteY="249dp" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView4"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        android:padding="0dp"
-        android:src="@drawable/rank0"
-        app:layout_constraintBottom_toTopOf="@+id/duelLabel"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView2"
+        app:layout_constraintEnd_toStartOf="@+id/cardView3"
+        app:layout_constraintStart_toEndOf="@+id/cardView2"
+        app:layout_constraintTop_toTopOf="@+id/cardView2"
+        app:layout_constraintVertical_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/duoImg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:src="@drawable/rank0"
+                tools:layout_editor_absoluteX="96dp"
+                tools:layout_editor_absoluteY="192dp" />
+
+            <TextView
+                android:id="@+id/duoLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2v2 Duo"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteX="96dp"
+                tools:layout_editor_absoluteY="212dp" />
+
+            <TextView
+                android:id="@+id/duoMmr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1337 MMR"
+                android:textAlignment="center"
+                app:layout_column="1"
+                app:layout_row="1"
+                tools:layout_editor_absoluteX="96dp"
+                tools:layout_editor_absoluteY="230dp" />
+
+            <TextView
+                android:id="@+id/duoTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Potato"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteX="96dp"
+                tools:layout_editor_absoluteY="249dp" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView2"
+        app:layout_constraintEnd_toStartOf="@+id/cardView5"
+        app:layout_constraintStart_toEndOf="@+id/cardView4"
+        app:layout_constraintTop_toTopOf="@+id/cardView2"
+        app:layout_constraintVertical_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/standardImg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:src="@drawable/rank0"
+                tools:layout_editor_absoluteX="192dp"
+                tools:layout_editor_absoluteY="192dp" />
+
+            <TextView
+                android:id="@+id/standardLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3v3 Standard"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteX="192dp"
+                tools:layout_editor_absoluteY="212dp" />
+
+            <TextView
+                android:id="@+id/standardMmr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1337 MMR"
+                android:textAlignment="center"
+                app:layout_column="2"
+                app:layout_row="1"
+                tools:layout_editor_absoluteX="192dp"
+                tools:layout_editor_absoluteY="230dp" />
+
+            <TextView
+                android:id="@+id/standardTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Potato"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteX="192dp"
+                tools:layout_editor_absoluteY="249dp" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/standardImg"
-        app:layout_constraintTop_toTopOf="@+id/duelImg"
-        app:layout_constraintVertical_bias="0.00999999" />
+        app:layout_constraintStart_toEndOf="@+id/cardView3"
+        app:layout_constraintTop_toTopOf="@+id/cardView2"
+        app:layout_constraintVertical_weight="1">
 
-    <TextView
-        android:id="@+id/duelLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="1v1Duel"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/duelMmr"
-        app:layout_constraintEnd_toStartOf="@+id/duoLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/duelImg" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/duoLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="2v2 Duo"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/duelMmr"
-        app:layout_constraintEnd_toStartOf="@+id/standardLabel"
-        app:layout_constraintStart_toEndOf="@+id/duelLabel"
-        app:layout_constraintTop_toTopOf="@+id/duelLabel"
-        app:layout_constraintVertical_bias="0.00999999" />
+            <ImageView
+                android:id="@+id/soloImg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:src="@drawable/rank0"
+                tools:layout_editor_absoluteX="288dp"
+                tools:layout_editor_absoluteY="192dp" />
 
-    <TextView
-        android:id="@+id/standardLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="3v3 Standard"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/duelMmr"
-        app:layout_constraintEnd_toStartOf="@+id/soloLabel"
-        app:layout_constraintStart_toEndOf="@+id/duoLabel"
-        app:layout_constraintTop_toBottomOf="@+id/duelImg"
-        app:layout_constraintVertical_bias="0.0" />
+            <TextView
+                android:id="@+id/soloLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3v3 Solo"
+                android:textAlignment="center"
+                app:layout_column="3"
+                app:layout_row="0"
+                tools:layout_editor_absoluteX="288dp"
+                tools:layout_editor_absoluteY="212dp" />
 
-    <TextView
-        android:id="@+id/soloLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="3v3 Solo"
-        android:textAlignment="center"
-        app:layout_column="3"
-        app:layout_constraintBottom_toTopOf="@+id/duelMmr"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/standardLabel"
-        app:layout_constraintTop_toBottomOf="@+id/duelImg"
-        app:layout_constraintVertical_bias="0.00999999"
-        app:layout_row="0" />
+            <TextView
+                android:id="@+id/soloMmr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1337 MMR"
+                android:textAlignment="center"
+                app:layout_column="3"
+                app:layout_row="1"
+                tools:layout_editor_absoluteX="288dp"
+                tools:layout_editor_absoluteY="230dp" />
 
-    <TextView
-        android:id="@+id/duelMmr"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="1337 MMR"
-        android:textAlignment="center"
-        app:layout_column="0"
-        app:layout_constraintBottom_toTopOf="@+id/duelTxt"
-        app:layout_constraintEnd_toStartOf="@+id/duoMmr"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/duelLabel"
-        app:layout_row="1" />
+            <TextView
+                android:id="@+id/soloTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Potato"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteX="288dp"
+                tools:layout_editor_absoluteY="249dp" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
-    <TextView
-        android:id="@+id/duoMmr"
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView6"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="1337 MMR"
-        android:textAlignment="center"
-        app:layout_column="1"
-        app:layout_constraintBottom_toTopOf="@+id/duelTxt"
-        app:layout_constraintEnd_toStartOf="@+id/standardMmr"
-        app:layout_constraintStart_toEndOf="@+id/duelMmr"
-        app:layout_constraintTop_toTopOf="@+id/duelMmr"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_row="1" />
-
-    <TextView
-        android:id="@+id/standardMmr"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="1337 MMR"
-        android:textAlignment="center"
-        app:layout_column="2"
-        app:layout_constraintBottom_toTopOf="@+id/duelTxt"
-        app:layout_constraintEnd_toStartOf="@+id/soloMmr"
-        app:layout_constraintStart_toEndOf="@+id/duoMmr"
-        app:layout_constraintTop_toTopOf="@+id/duelMmr"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_row="1" />
-
-    <TextView
-        android:id="@+id/soloMmr"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="1337 MMR"
-        android:textAlignment="center"
-        app:layout_column="3"
-        app:layout_constraintBottom_toTopOf="@+id/duelTxt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/standardMmr"
-        app:layout_constraintTop_toBottomOf="@+id/duelLabel"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_row="1" />
-
-    <TextView
-        android:id="@+id/duelTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="Potato"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/shotImg"
-        app:layout_constraintEnd_toStartOf="@+id/duoTxt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/duelMmr" />
-
-    <TextView
-        android:id="@+id/duoTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Potato"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/duelTxt"
-        app:layout_constraintEnd_toStartOf="@+id/standardTxt"
-        app:layout_constraintStart_toEndOf="@+id/duelTxt"
-        app:layout_constraintTop_toTopOf="@+id/duelTxt"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/standardTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Potato"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/duelTxt"
-        app:layout_constraintEnd_toStartOf="@+id/soloTxt"
-        app:layout_constraintStart_toEndOf="@+id/duoTxt"
-        app:layout_constraintTop_toTopOf="@+id/duelTxt"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/soloTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Potato"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/duelTxt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/standardTxt"
-        app:layout_constraintTop_toTopOf="@+id/duelTxt"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/shotImg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_weight="0.8"
-        android:src="@drawable/shots"
-        app:layout_constraintBottom_toTopOf="@+id/shotTxt"
-        app:layout_constraintEnd_toStartOf="@+id/saveImg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/duelTxt" />
-
-    <ImageView
-        android:id="@+id/saveImg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:src="@drawable/saves"
-        app:layout_constraintBottom_toBottomOf="@+id/shotImg"
-        app:layout_constraintEnd_toStartOf="@+id/winImg"
-        app:layout_constraintStart_toEndOf="@+id/shotImg"
-        app:layout_constraintTop_toTopOf="@+id/shotImg"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/winImg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:src="@drawable/wins"
-        app:layout_constraintBottom_toBottomOf="@+id/shotImg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/saveImg"
-        app:layout_constraintTop_toTopOf="@+id/shotImg"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/shotTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="250"
-        app:layout_constraintBottom_toTopOf="@+id/goalImg"
-        app:layout_constraintEnd_toStartOf="@+id/saveImg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shotImg" />
-
-    <TextView
-        android:id="@+id/saveTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="125"
-        app:layout_constraintBottom_toTopOf="@+id/goalImg"
-        app:layout_constraintEnd_toStartOf="@+id/winTxt"
-        app:layout_constraintStart_toEndOf="@+id/shotTxt"
-        app:layout_constraintTop_toTopOf="@+id/shotTxt"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/winTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="250"
-        app:layout_constraintBottom_toBottomOf="@+id/shotTxt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/saveTxt"
-        app:layout_constraintTop_toTopOf="@+id/shotTxt"
-        app:layout_constraintVertical_bias="0.00999999" />
-
-    <ImageView
-        android:id="@+id/goalImg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:src="@drawable/goals"
-        app:layout_constraintBottom_toTopOf="@+id/goalTxt"
-        app:layout_constraintEnd_toStartOf="@+id/assistImg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shotTxt" />
-
-    <ImageView
-        android:id="@+id/mvpImg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:src="@drawable/mvps"
-        app:layout_constraintBottom_toBottomOf="@+id/goalImg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/assistImg"
-        app:layout_constraintTop_toTopOf="@+id/goalImg"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/assistImg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
-        android:src="@drawable/assists"
-        app:layout_constraintBottom_toBottomOf="@+id/goalImg"
-        app:layout_constraintEnd_toStartOf="@+id/mvpImg"
-        app:layout_constraintStart_toEndOf="@+id/goalImg"
-        app:layout_constraintTop_toTopOf="@+id/goalImg"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/goalTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:gravity="center"
-        android:text="125"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/assistTxt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goalImg" />
-
-    <TextView
-        android:id="@+id/assistTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="250"
-        app:layout_constraintBottom_toBottomOf="@+id/goalTxt"
-        app:layout_constraintEnd_toStartOf="@+id/mvpTxt"
-        app:layout_constraintStart_toEndOf="@+id/goalTxt"
-        app:layout_constraintTop_toTopOf="@+id/goalTxt"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/mvpTxt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="125"
-        app:layout_constraintBottom_toBottomOf="@+id/goalTxt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/assistTxt"
-        app:layout_constraintTop_toTopOf="@+id/goalTxt"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView2"
+        app:layout_constraintVertical_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/shotImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:src="@drawable/shots"
+                    tools:layout_editor_absoluteY="331dp" />
+
+                <TextView
+                    android:id="@+id/shotTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="250"
+                    tools:layout_editor_absoluteY="431dp" />
+
+                <ImageView
+                    android:id="@+id/goalImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:src="@drawable/goals"
+                    tools:layout_editor_absoluteY="450dp" />
+
+                <TextView
+                    android:id="@+id/goalTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="125"
+                    tools:layout_editor_absoluteY="550dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/saveImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:src="@drawable/saves"
+                    tools:layout_editor_absoluteX="128dp"
+                    tools:layout_editor_absoluteY="331dp" />
+
+                <TextView
+                    android:id="@+id/saveTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="125"
+                    tools:layout_editor_absoluteX="128dp"
+                    tools:layout_editor_absoluteY="431dp" />
+
+                <ImageView
+                    android:id="@+id/assistImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:src="@drawable/assists"
+                    tools:layout_editor_absoluteX="128dp"
+                    tools:layout_editor_absoluteY="450dp" />
+
+                <TextView
+                    android:id="@+id/assistTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="250"
+                    tools:layout_editor_absoluteX="128dp"
+                    tools:layout_editor_absoluteY="550dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/winImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:src="@drawable/wins"
+                    tools:layout_editor_absoluteX="256dp"
+                    tools:layout_editor_absoluteY="331dp" />
+
+                <TextView
+                    android:id="@+id/winTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="250"
+                    tools:layout_editor_absoluteX="256dp"
+                    tools:layout_editor_absoluteY="431dp" />
+
+                <ImageView
+                    android:id="@+id/mvpImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8"
+                    android:src="@drawable/mvps"
+                    tools:layout_editor_absoluteX="256dp"
+                    tools:layout_editor_absoluteY="450dp" />
+
+                <TextView
+                    android:id="@+id/mvpTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="125"
+                    tools:layout_editor_absoluteX="256dp"
+                    tools:layout_editor_absoluteY="550dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 </android.support.constraint.ConstraintLayout>
