@@ -25,7 +25,6 @@ class PlayerOverview : AppCompatActivity() {
 
 
     //TODO Implement Player Search
-    //TODO Make Timestampcomparison work
 //------------------------------------------------------
     private val BASEURL = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
@@ -34,8 +33,13 @@ class PlayerOverview : AppCompatActivity() {
     private val playerFragment = PlayerFragment.newInstance()
     private val graphFragment = GraphFragment.newInstance()
 
+    /**
+     *
+     * fetches player data from the rest api and processes it further
+     *
+     */
     private fun requestPlayerStats() {
-        val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "player?unique_id=" + player!!.id + "&platform_id=" + player!!.platform, null,
+        val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "player?unique_id=" + player.id + "&platform_id=" + player.platform, null,
                 { response ->
                     try {
                         updatePlayerStats(response)
@@ -43,7 +47,7 @@ class PlayerOverview : AppCompatActivity() {
                     } catch (error: JSONException) {
                     error.printStackTrace()
                 }
-                }, { error -> android.util.Log.e("upPlStat", "Coudln't update Player stats") }) {
+                }, {android.util.Log.e("upPlStat", "Coudln't update Player stats")}) {
         @Throws(AuthFailureError::class)
         override fun getHeaders(): Map<String, String> {
             val params = HashMap<String, String>()
@@ -60,8 +64,13 @@ class PlayerOverview : AppCompatActivity() {
     fun updatePlayerStats(playerson: JSONObject) {
         android.util.Log.e("@update",playerson.toString())
         val stamp = this.player.update(playerson)
-        playerFragment.updateUI(stamp,this.player)
-        graphFragment.addChartEntries(stamp,player.getDayStartingStamp())
+        if(stamp != null) {
+            playerFragment.updateUI(stamp, this.player)
+            val oldStamp = player.seasons[player.currentSeason]?.getLastStampBefore(stamp)
+            //TODO oldStamp is always null
+            if(oldStamp != null)
+                graphFragment.addChartEntries(stamp,oldStamp)
+        }
     }
 
 

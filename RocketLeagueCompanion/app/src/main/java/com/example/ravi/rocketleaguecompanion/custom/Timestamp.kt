@@ -13,5 +13,4 @@ class Timestamp(val time:Long, val matchesPlayed:Int, val rankingList:Array<Rank
     fun getTotalShotPercentage():Float{
         return goals.toFloat()/shots.toFloat()
     }
-
 }

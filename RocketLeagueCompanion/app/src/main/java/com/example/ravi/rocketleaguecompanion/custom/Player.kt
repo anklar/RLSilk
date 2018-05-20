@@ -17,22 +17,15 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
     var updated: Long = 0
     var nextUpdate: Long = 0
     var currentSeason: Int = 0
-    var oldestRecord: Long = 0
-        get() {
-            if (oldestRecord == 0L)
-                oldestRecord = seasons.values.first().
-            return oldestRecord
-        }
 
 
-    fun toText(): String {
-        var bob: StringBuilder = StringBuilder()
+    override fun toString(): String {
+        var bob = StringBuilder()
         bob.append(""" name: $name" wins: ${wins}goals: ${goals}mvps: ${mvps}saves: ${saves}shots: ${shots}assists: $assists""")
         for (key: Int in seasons.keys) {
             bob.append(" Season: ")
             bob.append(key)
             bob.append("    ")
-            //bob.append(seasons[key]?.getGoals())
         }
         return bob.toString()
 
@@ -88,7 +81,7 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                         if (key.toInt() > currentSeason)
                             seasons[key.toInt()] = TimestampList(stamp)
                         else {
-                            seasons[key.toInt()]!!.add(stamp)
+                            seasons[key.toInt()]?.put(stamp)
                         }
                     }
                 } catch (error: JSONException) {
@@ -96,34 +89,6 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                     error.printStackTrace()
                     return null
                 }
-                /*
-                for (key: String in allSeasons.keys()) {
-                    try {
-                        var processedSeason = allSeasons.getJSONObject(key)
-                        android.util.Log.e("@playerUpdate", processedSeason.toString())
-                        if (key.toInt() >= currentSeason) {
-                            val matchesPlayed =
-                                    when (processedSeason.has("matchesPlayed")) {
-                                        true -> {
-                                            processedSeason.getJSONObject("" + 10).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 11).getInt("matchesPlayed")
-                                            +processedSeason.getJSONObject("" + 12).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 13).getInt("matchesPlayed")
-                                        }
-                                        false -> 0
-                                    }
-                            var rankings = getRankings(processedSeason)
-                            stamp = Timestamp(this.updated * 1000, matchesPlayed, rankings, shots, goals, saves, assists, wins, mvps)
-                            if (key.toInt() > currentSeason)
-                                seasons[key.toInt()] = TimestampList(stamp)
-                            else {
-                                seasons[key.toInt()]!!.add(stamp)
-                            }
-                        }
-                    } catch (error: JSONException) {
-                        android.util.Log.e("@playerUpdate", "Parsing of the JSONResponse for updating the player failed with an JSONException " + error.message)
-                        error.printStackTrace()
-                        return null
-                    }
-                }*/
             }
             return stamp
         } catch (error: JSONException) {
@@ -133,23 +98,16 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
         }
     }
 
-    /**
-     * finds the last timestamp of the last active day before today
-     */
-    fun getDayStartingStamp(): Timestamp {
-        //TODO return acutal latest stamp of the last day available
-        //return seasons.values.last().first()
-        return Timestamp(0, 0, arrayOf(), 0, 0, 0, 0, 0, 0)
-    }
 
     /**
      * parses the JSON into an array containing queue infos in the order "duel,duo,solo,standard"
      */
     private fun getRankings(processedSeason: JSONObject): Array<Ranking> {
         // 10 =  duel , 11 = duo, 12 = solo, 13 = standard
-        return arrayOf(Ranking(processedSeason.getJSONObject("" + 10).getInt("rankPoints"),
-                processedSeason.getJSONObject("" + 10).getInt("tier"),
-                processedSeason.getJSONObject("" + 10).getInt("division")),
+        return arrayOf(
+                Ranking(processedSeason.getJSONObject("" + 10).getInt("rankPoints"),
+                        processedSeason.getJSONObject("" + 10).getInt("tier"),
+                        processedSeason.getJSONObject("" + 10).getInt("division")),
                 Ranking(processedSeason.getJSONObject("" + 11).getInt("rankPoints"),
                         processedSeason.getJSONObject("" + 11).getInt("tier"),
                         processedSeason.getJSONObject("" + 11).getInt("division")),
