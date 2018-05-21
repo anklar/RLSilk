@@ -1,9 +1,10 @@
 package com.example.ravi.rlcomp.custom
 
+import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TimestampList : TreeMap<Int, Timestamp> {
+class TimestampMap : TreeMap<Int, Timestamp>, Serializable{
     constructor(item: Timestamp) : super() {
         val dateString = SimpleDateFormat("yyyyMMdd").format(Date(item.time)).toInt()
         this[dateString] = item

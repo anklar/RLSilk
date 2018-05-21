@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.GraphFragment">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/skillChart"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:backgroundTint="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toTopOf="@+id/balanceChart"
+            app:layout_constraintEnd_toEndOf="@+id/shotpercChart"
+            app:layout_constraintStart_toStartOf="@+id/shotpercChart"
+            app:layout_constraintTop_toBottomOf="@+id/shotpercChart">
+
+        </com.github.mikephil.charting.charts.LineChart>
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/shotpercChart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_weight="0.6"
-            android:backgroundTint="@color/colorPrimaryDark">
+            android:backgroundTint="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toTopOf="@+id/skillChart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
         </com.github.mikephil.charting.charts.LineChart>
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/skillChart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:backgroundTint="@color/colorPrimaryDark">
 
-        </com.github.mikephil.charting.charts.LineChart>
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/balanceChart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
             android:layout_weight="0.6"
-            android:backgroundTint="@color/colorPrimaryDark">
+            android:backgroundTint="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/shotpercChart"
+            app:layout_constraintStart_toStartOf="@+id/shotpercChart"
+            app:layout_constraintTop_toBottomOf="@+id/skillChart">
 
         </com.github.mikephil.charting.charts.PieChart>
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
 </FrameLayout>

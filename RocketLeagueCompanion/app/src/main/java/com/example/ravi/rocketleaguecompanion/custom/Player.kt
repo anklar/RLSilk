@@ -1,11 +1,11 @@
 package com.example.ravi.rlcomp.custom
 
+import android.content.Context
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.Serializable
 
-import java.util.ArrayList
-
-class Player(var id: String, var name: String, var platform: Int, var avatarUrl: String) {
+class Player(var id: String, var name: String, var platform: Int, var avatarUrl: String):Serializable {
     var profileUrl: String? = null
     var wins: Int = 0
     var goals: Int = 0
@@ -13,24 +13,13 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
     var saves: Int = 0
     var shots: Int = 0
     var assists: Int = 0
-    var seasons: LinkedHashMap<Int, TimestampList> = LinkedHashMap()
-    var season = TimestampList()
+    var season = TimestampMap()
     var updated: Long = 0
     var nextUpdate: Long = 0
     var currentSeason: Int = 0
 
 
-    override fun toString(): String {
-        var bob = StringBuilder()
-        bob.append(""" name: $name" wins: ${wins}goals: ${goals}mvps: ${mvps}saves: ${saves}shots: ${shots}assists: $assists""")
-        for (key: Int in seasons.keys) {
-            bob.append(" Season: ")
-            bob.append(key)
-            bob.append("    ")
-        }
-        return bob.toString()
 
-    }
 
     /**
      * updates this player with fresh data from the JSON
@@ -86,6 +75,7 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                     var processedSeason = allSeasons.getJSONObject(key)
                     android.util.Log.e("@playerUpdate", processedSeason.toString())
                     if (key.toInt() >= currentSeason) {
+                        //cal matchesPlayed and rankings
                         val matchesPlayed =
                                 when (processedSeason.has("matchesPlayed")) {
                                     true -> {
@@ -97,13 +87,14 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                         var rankings = getRankings(processedSeason)
                         stamp = Timestamp(this.updated * 1000, matchesPlayed, rankings, shots, goals, saves, assists, wins, mvps)
                         if (key.toInt() > currentSeason) {
+                            //in case season wasnt set, init season with a stamp
                             currentSeason = key.toInt()
-                            var newestSeason = TimestampList(stamp)
-                            seasons[key.toInt()] = newestSeason
+                            var newestSeason = TimestampMap(stamp)
+                            //seasons[key.toInt()] = newestSeason
                             season = newestSeason
                         }
                         else {
-                            seasons[key.toInt()]!!.put(stamp)
+                            //seasons[key.toInt()]!!.put(stamp)
                             season.put(stamp)
                         }
                     }

@@ -6,39 +6,38 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.ravi.rlcomp.custom.Player
 import com.example.ravi.rlcomp.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
+import com.example.ravi.rocketleaguecompanion.custom.DateAxisFormatter
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.android.synthetic.main.fragment_graph.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class GraphFragment : Fragment() {
 
-    private var today: Float = 0f
     private val currentShotPercColor = "#5Fa161"
     private val totalShotPercColor = "#F42A3B"
     private val duelGraphColor = "#FFFF00"
     private val duoGraphColor = "#5Fa1FF"
     private val standardGraphColor = "#F0a161"
     private val soloGraphColor = "#5F0061"
-    private lateinit var player: Player
     private lateinit var totalShotPercentageDataSet: LineDataSet
     private lateinit var currentShotPercentageDataSet: LineDataSet
     private lateinit var skillDataSetList: Array<LineDataSet>
     private lateinit var balanceDataSet: PieDataSet
     private var initStart = true
-    private var xAxisValue = 0f
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        today = PlayerFragment.getDayfromLong().toInt().toFloat()
         return inflater.inflate(R.layout.fragment_graph, container, false)
     }
 
@@ -50,19 +49,19 @@ class GraphFragment : Fragment() {
      * puts rolling shot percentage on the line chart
      */
     private fun addTotalShotPercentage(recentStamp: Timestamp) {
-        android.util.Log.e("@totl%","Putting total% on "+xAxisValue+" " +recentStamp.getTotalShotPercentage())
-       // totalShotPercentageDataSet?.removeEntryByXValue(xAxisValue)
-        totalShotPercentageDataSet.addEntry(Entry(xAxisValue, recentStamp.getTotalShotPercentage()))
+        android.util.Log.e("@totl%","Putting total% on "+recentStamp.time.toFloat()+" " +recentStamp.getTotalShotPercentage())
+        //totalShotPercentageDataSet?.removeEntryByXValue(recentStamp.day.toFloat())
+        totalShotPercentageDataSet.addEntry(Entry(recentStamp.time.toFloat(), recentStamp.getTotalShotPercentage()))
     }
 
     /**
      * puts daily shot percentage on the line chart
      */
     private fun addCurrentShotPercentage(recentStamp: Timestamp, oldStamp: Timestamp) {
-        //currentShotPercentageDataSet?.removeEntryByXValue(xAxisValue)
-        android.util.Log.e("@cur%","Putting current % on "+xAxisValue+ " "+
+        //currentShotPercentageDataSet?.removeEntryByXValue(recentStamp.day.toFloat())
+        android.util.Log.e("@cur%","Putting current % on "+recentStamp.time.toFloat()+ " "+
                 recentStamp.getShotPerc(oldStamp))
-        currentShotPercentageDataSet.addEntry(Entry(xAxisValue,
+        currentShotPercentageDataSet.addEntry(Entry(recentStamp.time.toFloat(),
                 recentStamp.getShotPerc(oldStamp)
         ))
     }
@@ -72,10 +71,14 @@ class GraphFragment : Fragment() {
      */
     private fun addMmr(recentStamp: Timestamp){
         for( i in recentStamp.rankingList.indices){
-            android.util.Log.e("@addMmr","Putting mmr for Queue " +i +" on "+xAxisValue+" "+
+            android.util.Log.e("@addMmr","Putting mmr for Queue " +i +" on "+recentStamp.time.toFloat()+" "+
                     recentStamp.rankingList[i].mmr.toFloat())
-            //skillDataSetList[i]?.removeEntryByXValue(xAxisValue)
-            skillDataSetList[i].addEntry(Entry(xAxisValue,
+            val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
+                    Date(skillDataSetList[i].getEntryForIndex(skillDataSetList[i].entryCount-1).x.toLong())).toInt()
+            if(recentStamp.day == lastEntryDay)
+                //if last entry was on the same day, delete it
+                skillDataSetList[i]?.removeEntryByXValue(recentStamp.day.toFloat())
+            skillDataSetList[i].addEntry(Entry(recentStamp.time.toFloat(),
                     recentStamp.rankingList[i].mmr.toFloat()
                     ))
         }
@@ -85,9 +88,12 @@ class GraphFragment : Fragment() {
      * puts all relevant data to the line charts
      */
     fun addChartEntries(recentStamp: Timestamp, oldStamp: Timestamp) {
-        xAxisValue = (recentStamp.day-20180500L).toFloat()
-        shotpercChart.xAxis.axisMaximum = xAxisValue+5f
-        skillChart.xAxis.axisMaximum = xAxisValue+5f
+        //recalculate Axis scale
+        shotpercChart.xAxis.axisMaximum = recentStamp.time.toFloat()+(86400000L*3L).toFloat()
+        skillChart.xAxis.axisMaximum = recentStamp.time.toFloat()+(86400000L*3L).toFloat()
+        skillChart.axisLeft.axisMinimum = minOf(minOf(recentStamp.rankingList[0].mmr,recentStamp.rankingList[1].mmr,recentStamp.rankingList[2].mmr),recentStamp.rankingList[3].mmr).toFloat()-200
+        skillChart.axisLeft.axisMaximum = maxOf(maxOf(recentStamp.rankingList[0].mmr,recentStamp.rankingList[1].mmr,recentStamp.rankingList[2].mmr),recentStamp.rankingList[3].mmr).toFloat()+200
+        //init if necessary, or just fill in data
         if (initStart) {
             initCharts(recentStamp, oldStamp)
             initStart = false
@@ -108,11 +114,9 @@ class GraphFragment : Fragment() {
     private fun initCharts(recentStamp: Timestamp, oldStamp: Timestamp) {
         //initalize shotPercChart
         //create each graph and set colors
-        xAxisValue = (recentStamp.day-20180500L).toFloat()
-        val x = xAxisValue
-        //TODO define real xAxis scaling
-        val xAxisStart = x-5f
-        val xAxisEnd = x+5f
+        val x = recentStamp.time.toFloat()
+        val xAxisStart = x-(86400000L*3L).toFloat()
+        val xAxisEnd = x+(86400000L*3L).toFloat()
 
         totalShotPercentageDataSet = LineDataSet(arrayListOf(Entry(
                 x, recentStamp.getTotalShotPercentage())), "Total Shot Percentage")
@@ -134,12 +138,14 @@ class GraphFragment : Fragment() {
         shotpercChart.xAxis.setDrawAxisLine(true)
         shotpercChart.xAxis.setDrawLabels(true)
         shotpercChart.xAxis.axisMaximum = xAxisEnd
+        shotpercChart.xAxis.valueFormatter = DateAxisFormatter()
 
         shotpercChart.axisRight.setDrawLabels(false)
         shotpercChart.axisRight.setDrawGridLines(false)
 
         shotpercChart.axisLeft.axisMinimum = 0f
         shotpercChart.axisLeft.axisMaximum = 1f
+        shotpercChart.axisLeft.valueFormatter = PercentFormatter()
 
         shotpercChart.description.text = ""
 
@@ -171,6 +177,8 @@ class GraphFragment : Fragment() {
         val soloDataSet = LineDataSet(arrayListOf(Entry(
                 x,recentStamp.rankingList[3].mmr.toFloat()
         )),"Duo MMR")
+
+        //set colors
         duelDataSet.color = ColorTemplate.rgb(duelGraphColor)
         duoDataSet.color = ColorTemplate.rgb(duoGraphColor)
         standardDataSet.color = ColorTemplate.rgb(standardGraphColor)
@@ -180,6 +188,8 @@ class GraphFragment : Fragment() {
         standardDataSet.setCircleColor(ColorTemplate.rgb(standardGraphColor))
         soloDataSet.setCircleColor(ColorTemplate.rgb(soloGraphColor))
 
+        //set axis lable
+        skillChart.xAxis.valueFormatter = DateAxisFormatter()
 
         skillDataSetList = arrayOf(duelDataSet,duoDataSet,standardDataSet,soloDataSet)
 
@@ -199,8 +209,8 @@ class GraphFragment : Fragment() {
         skillChart.axisRight.setDrawLabels(false)
         skillChart.axisRight.setDrawGridLines(false)
 
-        skillChart.axisLeft.axisMinimum = 0f
-        skillChart.axisLeft.axisMaximum = 2200f
+        skillChart.axisLeft.axisMinimum = minOf(minOf(recentStamp.rankingList[0].mmr,recentStamp.rankingList[1].mmr,recentStamp.rankingList[2].mmr),recentStamp.rankingList[3].mmr).toFloat()-200
+        skillChart.axisLeft.axisMaximum = maxOf(maxOf(recentStamp.rankingList[0].mmr,recentStamp.rankingList[1].mmr,recentStamp.rankingList[2].mmr),recentStamp.rankingList[3].mmr).toFloat()+200
 
         skillChart.description.text = ""
 

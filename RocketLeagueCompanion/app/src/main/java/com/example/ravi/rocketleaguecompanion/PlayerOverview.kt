@@ -1,5 +1,6 @@
 package com.example.ravi.rocketleaguecompanion
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -14,18 +15,20 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ravi.rlcomp.custom.Player
+import com.example.ravi.rlcomp.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.fragments.GraphFragment
 import com.example.ravi.rocketleaguecompanion.fragments.PlayerFragment
 import kotlinx.android.synthetic.main.activity_player_overview.*
+import org.jetbrains.anko.doAsync
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.util.*
 
 class PlayerOverview : AppCompatActivity() {
 
-
-    //TODO Save/Load Data
-    //TODO scale for xAxis
+    //TODO Correct Load
 
     //TODO Implement Player Search
     //TODO Glide Annotation in Gradle
@@ -38,7 +41,7 @@ class PlayerOverview : AppCompatActivity() {
     private val graphFragment = GraphFragment.newInstance()
     private val generateDummyStats = true
 
-    var dayCount = 0L
+    var dayCount = 0
     var goalAdd = 0
     var shotAdd = 0
     var assistAdd = 0
@@ -53,10 +56,13 @@ class PlayerOverview : AppCompatActivity() {
         val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "player?unique_id=" + player.id + "&platform_id=" + player.platform, null,
                 { response ->
                     try {
-                        if (generateDummyStats)
+                        if (generateDummyStats) {
                             dummyUpdate()
-                        else
+                            savePlayer(this)
+                        } else {
                             updatePlayerStats(response)
+                            savePlayer(this)
+                        }
                         refreshIn(response.getLong("nextUpdateAt") - response.getLong("lastRequested"))
                     } catch (error: JSONException) {
                         error.printStackTrace()
@@ -78,12 +84,14 @@ class PlayerOverview : AppCompatActivity() {
      */
     fun updatePlayerStats(playerson: JSONObject) {
         android.util.Log.e("@update", playerson.toString())
-        val stamp = this.player.update(playerson)
+        updateVisuals(this.player.update(playerson))
+
+    }
+
+    private fun updateVisuals(stamp: Timestamp?) {
         if (stamp != null) {
             playerFragment.updateUI(stamp, this.player)
-            val oldStamp = player.season?.getLastStampBefore(stamp)
-            if (oldStamp != null)
-                graphFragment.addChartEntries(stamp, oldStamp)
+            graphFragment.addChartEntries(stamp, player.season.getLastStampBefore(stamp))
         }
     }
 
@@ -92,14 +100,14 @@ class PlayerOverview : AppCompatActivity() {
         val duoDiff = Random().nextInt(100)
         val standDiff = Random().nextInt(100)
         val soloDiff = Random().nextInt(100)
-        goalAdd += Random().nextInt(100)
+        goalAdd += Random().nextInt(50)
         shotAdd += Random().nextInt(100)
-        assistAdd  += Random().nextInt(100)
+        assistAdd += Random().nextInt(100)
         saveAdd += Random().nextInt(100)
         val dummyResponse = "{\"uniqueId\":\"76561198033227582\",\"displayName\":\"BIN | St0rmhunter\",\"platform\":{\"id\":1,\"name\":\"Steam\"}," +
                 "\"avatar\":\"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/5e/5ea978e3b5b400fa44c036597f3f34d479e81d03_full.jpg\"," +
                 "\"profileUrl\":\"https://rocketleaguestats.com/profile/Steam/76561198033227582\",\"signatureUrl\":\"http://signature.rocketleaguestats.com/normal/Steam/76561198033227582.png\"" +
-                ",\"stats\":{\"wins\":5384,\"goals\":"+(17469+goalAdd)+",\"mvps\":2052,\"saves\":"+(10075+saveAdd)+",\"shots\":"+(35774+shotAdd)+",\"assists\":"+(4606+assistAdd)+"}," +
+                ",\"stats\":{\"wins\":5384,\"goals\":" + (17469 + goalAdd) + ",\"mvps\":2052,\"saves\":" + (10075 + saveAdd) + ",\"shots\":" + (35774 + shotAdd) + ",\"assists\":" + (4606 + assistAdd) + "}," +
                 "\"rankedSeasons\":{" +
                 "\"4\":{\"10\":{\"rankPoints\":697,\"matchesPlayed\":266,\"tier\":8,\"division\":2},\"11\":{\"rankPoints\":783,\"matchesPlayed\":828,\"tier\":9,\"division\":2},\"12\":{\"rankPoints\":656,\"matchesPlayed\":369,\"tier\":8,\"division\":0},\"13\":{\"rankPoints\":902,\"matchesPlayed\":758,\"tier\":11,\"division\":1}}," +
                 "\"5\":{\"10\":{\"rankPoints\":782,\"matchesPlayed\":402,\"tier\":10,\"division\":0},\"11\":{\"rankPoints\":779,\"matchesPlayed\":1488,\"tier\":9,\"division\":2},\"12\":{\"rankPoints\":737,\"matchesPlayed\":8,\"tier\":0,\"division\":0},\"13\":{\"rankPoints\":1049,\"matchesPlayed\":1406,\"tier\":13,\"division\":1}}," +
@@ -109,8 +117,8 @@ class PlayerOverview : AppCompatActivity() {
                 "11\":{\"rankPoints\":" + (1001 + duoDiff) + ",\"matchesPlayed\":403,\"tier\":14,\"division\":0},\"" +
                 "12\":{\"rankPoints\":" + (872 + standDiff) + ",\"matchesPlayed\":247,\"tier\":13,\"division\":1},\"" +
                 "13\":{\"rankPoints\":" + (1186 + soloDiff) + ",\"matchesPlayed\":408,\"tier\":16,\"division\":0}}}," +
-                "\"lastRequested\":1526916194,\"createdAt\":1492121089,\"updatedAt\":" + (System.currentTimeMillis()+dayCount).toString().dropLast(3) + ",\"nextUpdateAt\":1526916417}"
-        dayCount+= 86400000
+                "\"lastRequested\":1526916194,\"createdAt\":1492121089,\"updatedAt\":" + (System.currentTimeMillis() + dayCount).toString().dropLast(3) + ",\"nextUpdateAt\":1526916417}"
+        dayCount += 86400000
         updatePlayerStats(JSONObject(dummyResponse))
     }
 
@@ -121,13 +129,11 @@ class PlayerOverview : AppCompatActivity() {
     fun refreshIn(diff: Long) {
         Thread {
             try {
-                if (generateDummyStats)
-                    Thread.sleep(32000)
-                else
-                    if (diff > 42000)
-                        Thread.sleep(diff)
-                    else
-                        Thread.sleep(42000)
+                when {
+                    generateDummyStats -> Thread.sleep(32000)
+                    diff > 42000 -> Thread.sleep(diff)
+                    else -> Thread.sleep(42000)
+                }
                 requestPlayerStats()
             } catch (e: InterruptedException) {
 
@@ -138,6 +144,34 @@ class PlayerOverview : AppCompatActivity() {
 
     //-------------------------------------------------------
 
+    fun savePlayer(context: Context) {
+        try {
+            val out = ObjectOutputStream(context.openFileOutput("player", Context.MODE_PRIVATE))
+            out.writeObject(this.player)
+            out.close()
+        } catch (e: Exception) {
+            android.util.Log.e("@playsave", e.message)
+        }
+    }
+
+    private fun loadPlayer(context: Context) {
+        //get data from storage
+        try {
+            val input = ObjectInputStream(context.openFileInput("player"))
+            this.player = input.readObject() as Player
+            input.close()
+        } catch (e: Exception) {
+            android.util.Log.e("@playload", e.message)
+        }
+        dayCount += player.season.count()
+        //write chart entries
+        val ps = player.season
+        for (key in ps.keys) {
+            val item = ps[key]
+            updateVisuals(item)
+            val a = 5
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,8 +195,9 @@ class PlayerOverview : AppCompatActivity() {
 
             }
         })
+        val ctx = this
+        doAsync {loadPlayer(ctx)}
         requestPlayerStats()
-
     }
 
 

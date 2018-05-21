@@ -13,6 +13,7 @@ import com.example.ravi.rlcomp.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
 import com.example.ravi.rocketleaguecompanion.R.drawable.*
 import kotlinx.android.synthetic.main.fragment_player.*
+import org.jetbrains.anko.support.v4.toast
 
 
 class PlayerFragment : Fragment() {
@@ -135,7 +136,11 @@ class PlayerFragment : Fragment() {
      * updates all UI elements with a Timestamp
      */
     fun updateUI(stamp: Timestamp?, player: Player) {
-        Glide.with(this).load(player.avatarUrl).into(profilePic)
+        try {
+            Glide.with(this).load(player.avatarUrl).into(profilePic)
+        }catch(e:Exception){
+            android.util.Log.e("@avatar",e.message)
+        }
         userName.text = player.name
         if (stamp != null) {
             //updated image and text for each rank if changed
