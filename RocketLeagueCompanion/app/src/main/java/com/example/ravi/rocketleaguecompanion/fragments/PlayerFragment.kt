@@ -1,7 +1,5 @@
 package com.example.ravi.rocketleaguecompanion.fragments
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -9,28 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import butterknife.ButterKnife
-import com.android.volley.AuthFailureError
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.example.ravi.rlcomp.custom.Player
 import com.example.ravi.rlcomp.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
 import com.example.ravi.rocketleaguecompanion.R.drawable.*
-
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_player.*
-import org.json.JSONException
-import org.json.JSONObject
-import java.sql.Time
-import java.util.*
 
 
 class PlayerFragment : Fragment() {

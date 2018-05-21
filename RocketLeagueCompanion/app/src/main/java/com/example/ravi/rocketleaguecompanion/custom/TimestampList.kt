@@ -8,6 +8,8 @@ class TimestampList : TreeMap<Int, Timestamp> {
         val dateString = SimpleDateFormat("yyyyMMdd").format(Date(item.time)).toInt()
         this[dateString] = item
     }
+    constructor() : super()
+
 
 
     fun put(item: Timestamp) {
@@ -19,8 +21,8 @@ class TimestampList : TreeMap<Int, Timestamp> {
      * gets the newest timestamp before the given day
      */
     fun getLastStampBefore(item: Timestamp): Timestamp {
-        return this.lowerEntry(item.day).value ?:Timestamp(
-                0, 0, arrayOf(Ranking(0, 0, 0),
+       return this.lowerEntry(item.day)?.value ?:Timestamp(
+               1526915296000, 0, arrayOf(Ranking(0, 0, 0),
                 Ranking(0, 0, 0), Ranking(0, 0, 0),
                 Ranking(0, 0, 0)), 0, 0, 0, 0, 0, 0
         )

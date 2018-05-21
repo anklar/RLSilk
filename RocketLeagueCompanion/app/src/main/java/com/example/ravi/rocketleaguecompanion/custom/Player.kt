@@ -14,6 +14,7 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
     var shots: Int = 0
     var assists: Int = 0
     var seasons: LinkedHashMap<Int, TimestampList> = LinkedHashMap()
+    var season = TimestampList()
     var updated: Long = 0
     var nextUpdate: Long = 0
     var currentSeason: Int = 0
@@ -65,6 +66,23 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                 while (it.hasNext())
                     key = it.next()
                 try {
+                    /*
+                    //-------------------------------------
+                    var processedSeason = allSeasons.getJSONObject(key)
+                    val matchesPlayed = when (processedSeason.has("matchesPlayed")) {
+                        true -> {
+                            processedSeason.getJSONObject("" + 10).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 11).getInt("matchesPlayed")
+                            +processedSeason.getJSONObject("" + 12).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 13).getInt("matchesPlayed")
+                        }
+                        false -> 0
+                    }
+                    val rankings = getRankings(processedSeason)
+                    val stamp = Timestamp(this.updated * 1000, matchesPlayed, rankings, shots, goals, saves, assists, wins, mvps)
+                    season.put(stamp)
+
+                    //-------------------------------------
+                    */
+                    //TODO CHANGE THAT ONLY CURRENT SEASON IS SHOWN
                     var processedSeason = allSeasons.getJSONObject(key)
                     android.util.Log.e("@playerUpdate", processedSeason.toString())
                     if (key.toInt() >= currentSeason) {
@@ -78,10 +96,15 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                                 }
                         var rankings = getRankings(processedSeason)
                         stamp = Timestamp(this.updated * 1000, matchesPlayed, rankings, shots, goals, saves, assists, wins, mvps)
-                        if (key.toInt() > currentSeason)
-                            seasons[key.toInt()] = TimestampList(stamp)
+                        if (key.toInt() > currentSeason) {
+                            currentSeason = key.toInt()
+                            var newestSeason = TimestampList(stamp)
+                            seasons[key.toInt()] = newestSeason
+                            season = newestSeason
+                        }
                         else {
-                            seasons[key.toInt()]?.put(stamp)
+                            seasons[key.toInt()]!!.put(stamp)
+                            season.put(stamp)
                         }
                     }
                 } catch (error: JSONException) {

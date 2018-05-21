@@ -5,4 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="currentShotPercGraph">#5Fa161</color>
     <color name="totalShotPercGraph">#F42A3B</color>
+    <color name="duelGraph">#FFFF00</color>
+    <color name="duoGraph">#5Fa1FF</color>
+    <color name="standardGraph">#F0a161</color>
+    <color name="soloGraph">#5F0061</color>
 </resources>

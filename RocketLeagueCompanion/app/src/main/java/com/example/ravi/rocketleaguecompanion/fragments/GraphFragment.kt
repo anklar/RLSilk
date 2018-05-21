@@ -11,7 +11,6 @@ import com.example.ravi.rlcomp.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
-import java.util.*
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -23,18 +22,22 @@ class GraphFragment : Fragment() {
     private var today: Float = 0f
     private val currentShotPercColor = "#5Fa161"
     private val totalShotPercColor = "#F42A3B"
+    private val duelGraphColor = "#FFFF00"
+    private val duoGraphColor = "#5Fa1FF"
+    private val standardGraphColor = "#F0a161"
+    private val soloGraphColor = "#5F0061"
     private lateinit var player: Player
     private lateinit var totalShotPercentageDataSet: LineDataSet
     private lateinit var currentShotPercentageDataSet: LineDataSet
     private lateinit var skillDataSetList: Array<LineDataSet>
     private lateinit var balanceDataSet: PieDataSet
     private var initStart = true
+    private var xAxisValue = 0f
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        //TODO set player
         today = PlayerFragment.getDayfromLong().toInt().toFloat()
         return inflater.inflate(R.layout.fragment_graph, container, false)
     }
@@ -47,14 +50,19 @@ class GraphFragment : Fragment() {
      * puts rolling shot percentage on the line chart
      */
     private fun addTotalShotPercentage(recentStamp: Timestamp) {
-        totalShotPercentageDataSet.addEntry(Entry(recentStamp.day.toFloat(), recentStamp.getTotalShotPercentage()))
+        android.util.Log.e("@totl%","Putting total% on "+xAxisValue+" " +recentStamp.getTotalShotPercentage())
+       // totalShotPercentageDataSet?.removeEntryByXValue(xAxisValue)
+        totalShotPercentageDataSet.addEntry(Entry(xAxisValue, recentStamp.getTotalShotPercentage()))
     }
 
     /**
      * puts daily shot percentage on the line chart
      */
     private fun addCurrentShotPercentage(recentStamp: Timestamp, oldStamp: Timestamp) {
-        currentShotPercentageDataSet.addEntry(Entry(recentStamp.day.toFloat(),
+        //currentShotPercentageDataSet?.removeEntryByXValue(xAxisValue)
+        android.util.Log.e("@cur%","Putting current % on "+xAxisValue+ " "+
+                recentStamp.getShotPerc(oldStamp))
+        currentShotPercentageDataSet.addEntry(Entry(xAxisValue,
                 recentStamp.getShotPerc(oldStamp)
         ))
     }
@@ -63,8 +71,11 @@ class GraphFragment : Fragment() {
      * puts mmr on the line chart
      */
     private fun addMmr(recentStamp: Timestamp){
-        for( i in 0..recentStamp.rankingList.size){
-            skillDataSetList[i].addEntry(Entry(recentStamp.day.toFloat(),
+        for( i in recentStamp.rankingList.indices){
+            android.util.Log.e("@addMmr","Putting mmr for Queue " +i +" on "+xAxisValue+" "+
+                    recentStamp.rankingList[i].mmr.toFloat())
+            //skillDataSetList[i]?.removeEntryByXValue(xAxisValue)
+            skillDataSetList[i].addEntry(Entry(xAxisValue,
                     recentStamp.rankingList[i].mmr.toFloat()
                     ))
         }
@@ -74,6 +85,9 @@ class GraphFragment : Fragment() {
      * puts all relevant data to the line charts
      */
     fun addChartEntries(recentStamp: Timestamp, oldStamp: Timestamp) {
+        xAxisValue = (recentStamp.day-20180500L).toFloat()
+        shotpercChart.xAxis.axisMaximum = xAxisValue+5f
+        skillChart.xAxis.axisMaximum = xAxisValue+5f
         if (initStart) {
             initCharts(recentStamp, oldStamp)
             initStart = false
@@ -87,16 +101,18 @@ class GraphFragment : Fragment() {
         shotpercChart.invalidate()
         balanceChart.notifyDataSetChanged()
         balanceChart.invalidate()
-
+        skillChart.notifyDataSetChanged()
+        skillChart.invalidate()
     }
 
     private fun initCharts(recentStamp: Timestamp, oldStamp: Timestamp) {
         //initalize shotPercChart
         //create each graph and set colors
-        val x = recentStamp.day.toFloat()
+        xAxisValue = (recentStamp.day-20180500L).toFloat()
+        val x = xAxisValue
         //TODO define real xAxis scaling
-        val xAxisStart = -30f
-        val xAxisEnd = 30f
+        val xAxisStart = x-5f
+        val xAxisEnd = x+5f
 
         totalShotPercentageDataSet = LineDataSet(arrayListOf(Entry(
                 x, recentStamp.getTotalShotPercentage())), "Total Shot Percentage")
@@ -104,7 +120,7 @@ class GraphFragment : Fragment() {
         totalShotPercentageDataSet.setCircleColor(ColorTemplate.rgb(totalShotPercColor))
 
         currentShotPercentageDataSet = LineDataSet(arrayListOf(Entry(
-                x, recentStamp.getShotPerc(oldStamp))), "Total Shot Percentage")
+                x, recentStamp.getShotPerc(oldStamp))), "Current Shot Percentage")
         currentShotPercentageDataSet.color = ColorTemplate.rgb(currentShotPercColor)
         currentShotPercentageDataSet.setCircleColor(ColorTemplate.rgb(currentShotPercColor))
 
@@ -150,11 +166,20 @@ class GraphFragment : Fragment() {
                 x,recentStamp.rankingList[1].mmr.toFloat()
         )),"Duo MMR")
         val standardDataSet = LineDataSet(arrayListOf(Entry(
-                x,recentStamp.rankingList[3].mmr.toFloat()
+                x,recentStamp.rankingList[2].mmr.toFloat()
         )),"Duel MMR")
         val soloDataSet = LineDataSet(arrayListOf(Entry(
-                x,recentStamp.rankingList[4].mmr.toFloat()
+                x,recentStamp.rankingList[3].mmr.toFloat()
         )),"Duo MMR")
+        duelDataSet.color = ColorTemplate.rgb(duelGraphColor)
+        duoDataSet.color = ColorTemplate.rgb(duoGraphColor)
+        standardDataSet.color = ColorTemplate.rgb(standardGraphColor)
+        soloDataSet.color = ColorTemplate.rgb(soloGraphColor)
+        duelDataSet.setCircleColor(ColorTemplate.rgb(duelGraphColor))
+        duoDataSet.setCircleColor(ColorTemplate.rgb(duoGraphColor))
+        standardDataSet.setCircleColor(ColorTemplate.rgb(standardGraphColor))
+        soloDataSet.setCircleColor(ColorTemplate.rgb(soloGraphColor))
+
 
         skillDataSetList = arrayOf(duelDataSet,duoDataSet,standardDataSet,soloDataSet)
 
