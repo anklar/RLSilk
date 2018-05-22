@@ -50,7 +50,12 @@ class GraphFragment : Fragment() {
      */
     private fun addTotalShotPercentage(recentStamp: Timestamp) {
         android.util.Log.e("@totl%","Putting total% on "+recentStamp.time.toFloat()+" " +recentStamp.getTotalShotPercentage())
-        //totalShotPercentageDataSet?.removeEntryByXValue(recentStamp.day.toFloat())
+        val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
+                Date(totalShotPercentageDataSet.getEntryForIndex(totalShotPercentageDataSet.entryCount-1).x.toLong())).toInt()
+        if(recentStamp.day == lastEntryDay)
+        //if last entry was on the same day, delete it
+            totalShotPercentageDataSet.removeEntryByXValue(recentStamp.day.toFloat())
+
         totalShotPercentageDataSet.addEntry(Entry(recentStamp.time.toFloat(), recentStamp.getTotalShotPercentage()))
     }
 
@@ -61,6 +66,12 @@ class GraphFragment : Fragment() {
         //currentShotPercentageDataSet?.removeEntryByXValue(recentStamp.day.toFloat())
         android.util.Log.e("@cur%","Putting current % on "+recentStamp.time.toFloat()+ " "+
                 recentStamp.getShotPerc(oldStamp))
+        val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
+                Date(currentShotPercentageDataSet.getEntryForIndex(currentShotPercentageDataSet.entryCount-1).x.toLong())).toInt()
+        if(recentStamp.day == lastEntryDay)
+        //if last entry was on the same day, delete it
+            currentShotPercentageDataSet.removeEntryByXValue(recentStamp.day.toFloat())
+
         currentShotPercentageDataSet.addEntry(Entry(recentStamp.time.toFloat(),
                 recentStamp.getShotPerc(oldStamp)
         ))
@@ -77,7 +88,7 @@ class GraphFragment : Fragment() {
                     Date(skillDataSetList[i].getEntryForIndex(skillDataSetList[i].entryCount-1).x.toLong())).toInt()
             if(recentStamp.day == lastEntryDay)
                 //if last entry was on the same day, delete it
-                skillDataSetList[i]?.removeEntryByXValue(recentStamp.day.toFloat())
+                skillDataSetList[i].removeEntryByXValue(recentStamp.day.toFloat())
             skillDataSetList[i].addEntry(Entry(recentStamp.time.toFloat(),
                     recentStamp.rankingList[i].mmr.toFloat()
                     ))
@@ -89,8 +100,8 @@ class GraphFragment : Fragment() {
      */
     fun addChartEntries(recentStamp: Timestamp, oldStamp: Timestamp) {
         //recalculate Axis scale
-        shotpercChart.xAxis.axisMaximum = recentStamp.time.toFloat()+(86400000L*3L).toFloat()
-        skillChart.xAxis.axisMaximum = recentStamp.time.toFloat()+(86400000L*3L).toFloat()
+        shotpercChart.xAxis.axisMaximum = recentStamp.time.toFloat()+(86400000L*1L).toFloat()
+        skillChart.xAxis.axisMaximum = recentStamp.time.toFloat()+(86400000L*1L).toFloat()
         skillChart.axisLeft.axisMinimum = minOf(minOf(recentStamp.rankingList[0].mmr,recentStamp.rankingList[1].mmr,recentStamp.rankingList[2].mmr),recentStamp.rankingList[3].mmr).toFloat()-200
         skillChart.axisLeft.axisMaximum = maxOf(maxOf(recentStamp.rankingList[0].mmr,recentStamp.rankingList[1].mmr,recentStamp.rankingList[2].mmr),recentStamp.rankingList[3].mmr).toFloat()+200
         //init if necessary, or just fill in data
@@ -115,8 +126,9 @@ class GraphFragment : Fragment() {
         //initalize shotPercChart
         //create each graph and set colors
         val x = recentStamp.time.toFloat()
-        val xAxisStart = x-(86400000L*3L).toFloat()
-        val xAxisEnd = x+(86400000L*3L).toFloat()
+        val xAxisStart = x-(86400000L*1L).toFloat()
+        val xAxisEnd = x+(86400000L*1L).toFloat()
+
 
         totalShotPercentageDataSet = LineDataSet(arrayListOf(Entry(
                 x, recentStamp.getTotalShotPercentage())), "Total Shot Percentage")
@@ -127,6 +139,11 @@ class GraphFragment : Fragment() {
                 x, recentStamp.getShotPerc(oldStamp))), "Current Shot Percentage")
         currentShotPercentageDataSet.color = ColorTemplate.rgb(currentShotPercColor)
         currentShotPercentageDataSet.setCircleColor(ColorTemplate.rgb(currentShotPercColor))
+
+
+        totalShotPercentageDataSet.valueFormatter = PercentFormatter()
+
+        currentShotPercentageDataSet.valueFormatter = PercentFormatter()
 
         //add graphs to the chart
         shotpercChart.data = LineData()
@@ -144,14 +161,14 @@ class GraphFragment : Fragment() {
         shotpercChart.axisRight.setDrawGridLines(false)
 
         shotpercChart.axisLeft.axisMinimum = 0f
-        shotpercChart.axisLeft.axisMaximum = 1f
+        shotpercChart.axisLeft.axisMaximum = 100f
         shotpercChart.axisLeft.valueFormatter = PercentFormatter()
 
         shotpercChart.description.text = ""
 
         //initalize balance chart
         val sum = (recentStamp.goals + recentStamp.saves + recentStamp.assists).toFloat()
-        balanceChart.centerText = "Playstyle"
+        //balanceChart.centerText = "Playstyle"
         balanceDataSet = PieDataSet(arrayListOf(PieEntry(recentStamp.goals / sum, "Goal%"),
                 PieEntry(recentStamp.saves / sum, "Save%"),
                 PieEntry(recentStamp.assists / sum, "Assist%")
@@ -159,7 +176,10 @@ class GraphFragment : Fragment() {
         balanceChart.setUsePercentValues(true)
         balanceDataSet.colors = arrayListOf(ColorTemplate.rgb("#0000FF"), ColorTemplate.rgb("#00FF00"), ColorTemplate.rgb("#FF0000"))
         balanceChart.data = PieData(balanceDataSet)
+        balanceChart.holeRadius = 0f
+        balanceChart.setTransparentCircleAlpha(0)
         balanceChart.description.text = ""
+        balanceDataSet.valueFormatter = PercentFormatter()
 
 
         //initalize ranking chart

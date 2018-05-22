@@ -9,9 +9,9 @@ class Timestamp(val time:Long, val matchesPlayed:Int, val rankingList:Array<Rank
     val day:Int
         get () = SimpleDateFormat("yyyyMMdd").format(Date(this.time)).toInt()
     fun getShotPerc(old:Timestamp):Float{
-        return (goals.toFloat()-old.goals.toFloat())     /    (shots.toFloat()-old.shots.toFloat())
+        return (goals.toFloat()-old.goals.toFloat())     /    (shots.toFloat()-old.shots.toFloat())*100f
     }
     fun getTotalShotPercentage():Float{
-        return goals.toFloat()/shots.toFloat()
+        return goals.toFloat()/shots.toFloat()*100f
     }
 }

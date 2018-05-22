@@ -24,11 +24,14 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.lang.Thread.sleep
 import java.util.*
+import kotlin.concurrent.thread
 
 class PlayerOverview : AppCompatActivity() {
 
-    //TODO Correct Load
+    //TODO AppIntro
+    //TODO Reset Player Button
 
     //TODO Implement Player Search
     //TODO Glide Annotation in Gradle
@@ -39,7 +42,7 @@ class PlayerOverview : AppCompatActivity() {
     private var player = Player("76561198033227582", "Placeholder,", 1, "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/5e/5ea978e3b5b400fa44c036597f3f34d479e81d03_full.jpg")
     private val playerFragment = PlayerFragment.newInstance()
     private val graphFragment = GraphFragment.newInstance()
-    private val generateDummyStats = true
+    private val generateDummyStats = false
 
     var dayCount = 0
     var goalAdd = 0
@@ -101,7 +104,7 @@ class PlayerOverview : AppCompatActivity() {
         val standDiff = Random().nextInt(100)
         val soloDiff = Random().nextInt(100)
         goalAdd += Random().nextInt(50)
-        shotAdd += Random().nextInt(100)
+        shotAdd += Random().nextInt(50)+50
         assistAdd += Random().nextInt(100)
         saveAdd += Random().nextInt(100)
         val dummyResponse = "{\"uniqueId\":\"76561198033227582\",\"displayName\":\"BIN | St0rmhunter\",\"platform\":{\"id\":1,\"name\":\"Steam\"}," +
@@ -118,7 +121,7 @@ class PlayerOverview : AppCompatActivity() {
                 "12\":{\"rankPoints\":" + (872 + standDiff) + ",\"matchesPlayed\":247,\"tier\":13,\"division\":1},\"" +
                 "13\":{\"rankPoints\":" + (1186 + soloDiff) + ",\"matchesPlayed\":408,\"tier\":16,\"division\":0}}}," +
                 "\"lastRequested\":1526916194,\"createdAt\":1492121089,\"updatedAt\":" + (System.currentTimeMillis() + dayCount).toString().dropLast(3) + ",\"nextUpdateAt\":1526916417}"
-        dayCount += 86400000
+        dayCount += 86400000/2
         updatePlayerStats(JSONObject(dummyResponse))
     }
 
@@ -163,14 +166,22 @@ class PlayerOverview : AppCompatActivity() {
         } catch (e: Exception) {
             android.util.Log.e("@playload", e.message)
         }
-        dayCount += player.season.count()
+        dayCount += player.season.values.count()
+        dayCount *=86400000
+    }
+    private fun drawLoadedData(){
         //write chart entries
-        val ps = player.season
-        for (key in ps.keys) {
-            val item = ps[key]
-            updateVisuals(item)
-            val a = 5
+        //TODO Fix writing to charts && for each bug
+        val ps = player.season.values.iterator()
+        try {
+            do {
+                val item = ps.next()
+                updateVisuals(item)
+            } while (ps.hasNext())
+        }catch(e:Exception){
+
         }
+        requestPlayerStats()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -178,10 +189,6 @@ class PlayerOverview : AppCompatActivity() {
         setContentView(R.layout.activity_player_overview)
 
         req = Volley.newRequestQueue(this.applicationContext)
-
-        viewPager.adapter = PagerAdapter(supportFragmentManager, 2)
-        tabLayout.setupWithViewPager(viewPager)
-
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
 
@@ -196,8 +203,20 @@ class PlayerOverview : AppCompatActivity() {
             }
         })
         val ctx = this
-        doAsync {loadPlayer(ctx)}
-        requestPlayerStats()
+        loadPlayer(ctx)
+
+        viewPager.adapter = PagerAdapter(supportFragmentManager, 2)
+        tabLayout.setupWithViewPager(viewPager)
+
+    }
+
+    override fun onStart(){
+        super.onStart()
+        Thread{
+            sleep(2000)
+            runOnUiThread({drawLoadedData()})
+        }.start()
+
     }
 
 
