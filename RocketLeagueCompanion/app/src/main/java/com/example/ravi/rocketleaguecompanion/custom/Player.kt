@@ -19,6 +19,19 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
     var currentSeason: Int = 0
 
 
+    companion object {
+        fun fromJSON(playerson:JSONObject):Player?{
+            return try {
+                val p = Player(playerson.getString("uniqueId"), playerson.getString("displayName"),
+                        playerson.getJSONObject("platform").getInt("id"), playerson.getString("avatar"))
+                p.update(playerson)
+                p
+            }catch (e:Exception){
+                android.util.Log.e("@playParse", e.message)
+                null
+            }
+        }
+    }
 
 
     /**

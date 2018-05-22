@@ -193,10 +193,10 @@ class GraphFragment : Fragment() {
         )),"Duo MMR")
         val standardDataSet = LineDataSet(arrayListOf(Entry(
                 x,recentStamp.rankingList[2].mmr.toFloat()
-        )),"Duel MMR")
+        )),"Standard MMR")
         val soloDataSet = LineDataSet(arrayListOf(Entry(
                 x,recentStamp.rankingList[3].mmr.toFloat()
-        )),"Duo MMR")
+        )),"Solo MMR")
 
         //set colors
         duelDataSet.color = ColorTemplate.rgb(duelGraphColor)

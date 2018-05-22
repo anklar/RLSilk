@@ -1,5 +1,6 @@
 package com.example.ravi.rocketleaguecompanion.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -12,8 +13,8 @@ import com.example.ravi.rlcomp.custom.Player
 import com.example.ravi.rlcomp.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
 import com.example.ravi.rocketleaguecompanion.R.drawable.*
+import com.example.ravi.rocketleaguecompanion.SearchActivity
 import kotlinx.android.synthetic.main.fragment_player.*
-import org.jetbrains.anko.support.v4.toast
 
 
 class PlayerFragment : Fragment() {
@@ -153,33 +154,26 @@ class PlayerFragment : Fragment() {
             duoMmr.text = "MMR: " + stamp.rankingList[1].mmr
             soloMmr.text = "MMR: " + stamp.rankingList[2].mmr
             standardMmr.text = "MMR: " + stamp.rankingList[3].mmr
+            //set stats
+            goalTxt.text = stamp.goals.toString()
+            saveTxt.text = stamp.saves.toString()
+            winTxt.text = stamp.wins.toString()
+            shotTxt.text = stamp.shots.toString()
+            assistTxt.text = stamp.assists.toString()
+            mvpTxt.text = stamp.mvps.toString()
         }
     }
 
 
-    /*fun searchPlayers(keyword: String) {
-        val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "search/players?display_name=" + keyword, null,
-                { response ->
-                    try {
-                        val jayray = response.getJSONArray("data")
-                        val players = arrayOfNulls<Player>(jayray.length())
-                        for (i in 0 until jayray.length()) {
-                            players[i] = Player.fromJSON(jayray.getJSONObject(i))
-                        }
-                        //Display players in ScrollView
-                    } catch (error: JSONException) {
-
-                    }
-                }, { error ->
-
-        }) {
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String> {
-                val params = HashMap<String, String>()
-                params["Authorization"] = "ENG5EKOIR4BBEJGSAF5NW068RH5BU2VU"
-                return params
-            }
+    override fun onStart() {
+        super.onStart()
+        toSearchButton.setOnClickListener {
+            openSearchActivity()
         }
-    }*/
+    }
+    fun openSearchActivity() {
+        val intent = Intent(this.activity, SearchActivity::class.java)
+        startActivity(intent)
+    }
 
 }
