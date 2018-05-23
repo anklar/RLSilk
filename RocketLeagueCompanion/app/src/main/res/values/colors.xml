@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF5500</color>
+    <color name="colorPrimary">#FF8833</color>
+    <color name="colorPrimaryHint">#FF3300</color>
     <color name="colorPrimaryDark">#00005F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="currentShotPercGraph">#5Fa161</color>

@@ -1,5 +1,6 @@
 package com.example.ravi.rocketleaguecompanion
 
+import android.annotation.SuppressLint
 import android.app.ListActivity
 import android.content.Context
 import android.content.Intent
@@ -17,24 +18,18 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
-import com.example.ravi.rlcomp.custom.*
+import com.example.ravi.rocketleaguecompanion.custom.Player
 import kotlinx.android.synthetic.main.activity_search.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
+
 class SearchActivity : ListActivity() {
 
-    private val BASEURL = "https://api.rocketleaguestats.com/v1/"
+    private val baseUrl = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
     private var playerDataList = LinkedList<JSONObject>()
-
-
-    /*  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                savedInstanceState: Bundle?): View? {
-          // Inflate the layout for this fragment
-          return inflater.inflate(R.layout.fragment_search, container, false)
-      }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,14 +37,15 @@ class SearchActivity : ListActivity() {
         req = Volley.newRequestQueue(this.applicationContext)
     }
 
-
-
     override fun onStart() {
         super.onStart()
+
         searchButton.setOnClickListener {
             android.util.Log.e("@Searchclick", searchText.text.toString())
             searchPlayers(searchText.text.toString())
         }
+
+
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val intent = Intent(this, PlayerOverview::class.java).apply {
                 putExtra("player", playerDataList[position].toString())
@@ -58,14 +54,17 @@ class SearchActivity : ListActivity() {
         }
     }
 
-    fun searchPlayers(name: String) {
-        val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "search/players?display_name=" + name, null,
+    /**
+     * fires a search request to find players to a given name
+     */
+    private fun searchPlayers(name: String) {
+        val request = object : JsonObjectRequest(Request.Method.GET, baseUrl + "search/players?display_name=" + name, null,
                 { response ->
                     try {
                         val jayray = response.getJSONArray("data")
                         val foundPlayers = LinkedList<Player>()
                         for (i in 0 until jayray.length()) {
-                             foundPlayers.add(Player.fromJSON(jayray.getJSONObject(i))!!)
+                            foundPlayers.add(Player.fromJSON(jayray.getJSONObject(i))!!)
                             playerDataList.add(jayray.getJSONObject(i))
                         }
                         handleSearchResponse(foundPlayers)
@@ -74,7 +73,7 @@ class SearchActivity : ListActivity() {
 
                     }
                 }, { error ->
-                    android.util.Log.e("@playerSearch",error.message)
+            android.util.Log.e("@playerSearch", error.message)
         }) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
@@ -87,13 +86,17 @@ class SearchActivity : ListActivity() {
         req!!.add(request)
     }
 
+    /**
+     * creates adapter that puts a list of found players into the listview
+     */
     private fun handleSearchResponse(playerData: LinkedList<Player>) {
-        if (playerData != null) {
             val customAdapter = CustomAdapter(this, playerData)
             listView.adapter = customAdapter
-        }
     }
 
+    /**
+     * Adapter to put players in the listview
+     */
     inner class CustomAdapter(private val context: Context, private val foundPlayers: LinkedList<Player>) : BaseAdapter() {
         private val inflater: LayoutInflater = LayoutInflater.from(context)
 
@@ -109,6 +112,7 @@ class SearchActivity : ListActivity() {
             return 0
         }
 
+        @SuppressLint("ViewHolder", "InflateParams")
         override fun getView(i: Int, v: View?, viewGroup: ViewGroup): View {
 
             val view = inflater.inflate(R.layout.player_tile, null)
@@ -117,7 +121,7 @@ class SearchActivity : ListActivity() {
 
             try {
                 Glide.with(context).load(foundPlayers[i].avatarUrl).into(playerImage)
-            }catch (e:Exception){
+            } catch (e: Exception) {
 
             }
             playerName.text = foundPlayers[i].name

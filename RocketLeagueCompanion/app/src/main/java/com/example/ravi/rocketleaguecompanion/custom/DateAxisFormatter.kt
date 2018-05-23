@@ -6,10 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DateAxisFormatter: IAxisValueFormatter {
-
-    val decimalDigits: Int
-        get() = 0
+class DateAxisFormatter : IAxisValueFormatter {
 
     /**
      * converts a millis Timestamp into a formated String

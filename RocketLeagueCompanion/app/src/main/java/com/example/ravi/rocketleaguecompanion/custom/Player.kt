@@ -1,12 +1,15 @@
-package com.example.ravi.rlcomp.custom
+package com.example.ravi.rocketleaguecompanion.custom
 
-import android.content.Context
+import com.example.ravi.rlcomp.custom.Timestamp
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.Serializable
 
-class Player(var id: String, var name: String, var platform: Int, var avatarUrl: String):Serializable {
-    var profileUrl: String? = null
+/**
+ * represents a player with all attributes
+ */
+class Player(var id: String, var name: String, var platform: Int, var avatarUrl: String) : Serializable {
+    private var profileUrl: String? = null
     var wins: Int = 0
     var goals: Int = 0
     var mvps: Int = 0
@@ -14,19 +17,21 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
     var shots: Int = 0
     var assists: Int = 0
     var season = TimestampMap()
-    var updated: Long = 0
-    var nextUpdate: Long = 0
-    var currentSeason: Int = 0
+    private var updated: Long = 0
+    private var currentSeason: Int = 0
 
 
     companion object {
-        fun fromJSON(playerson:JSONObject):Player?{
+        /**
+         * static conversion to construct a player out of a JSON
+         */
+        fun fromJSON(playerson: JSONObject): Player? {
             return try {
                 val p = Player(playerson.getString("uniqueId"), playerson.getString("displayName"),
                         playerson.getJSONObject("platform").getInt("id"), playerson.getString("avatar"))
                 p.update(playerson)
                 p
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 android.util.Log.e("@playParse", e.message)
                 null
             }
@@ -47,8 +52,6 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                 this.avatarUrl = playerson.getString("avatar").replace("\\", "")
             if (playerson.has("updatedAt"))
                 this.updated = playerson.getLong("updatedAt")
-            if (playerson.has("nextUpdateAt"))
-                this.nextUpdate = playerson.getLong("nextUpdateAt")
             if (playerson.has("stats")) {
                 val stats = playerson.getJSONObject("stats")
                 this.wins = stats.getInt("wins")
@@ -62,51 +65,23 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                 this.profileUrl = playerson.getString("profileUrl").replace("\\", "")
             var stamp: Timestamp? = null
             if (playerson.has("rankedSeasons")) {
-                var allSeasons = playerson.getJSONObject("rankedSeasons")
+                val allSeasons = playerson.getJSONObject("rankedSeasons")
                 val it = allSeasons.keys()
                 var key = ""
                 while (it.hasNext())
                     key = it.next()
                 try {
-                    /*
-                    //-------------------------------------
-                    var processedSeason = allSeasons.getJSONObject(key)
-                    val matchesPlayed = when (processedSeason.has("matchesPlayed")) {
-                        true -> {
-                            processedSeason.getJSONObject("" + 10).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 11).getInt("matchesPlayed")
-                            +processedSeason.getJSONObject("" + 12).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 13).getInt("matchesPlayed")
-                        }
-                        false -> 0
-                    }
-                    val rankings = getRankings(processedSeason)
-                    val stamp = Timestamp(this.updated * 1000, matchesPlayed, rankings, shots, goals, saves, assists, wins, mvps)
-                    season.put(stamp)
-
-                    //-------------------------------------
-                    */
-                    //TODO CHANGE THAT ONLY CURRENT SEASON IS SHOWN
-                    var processedSeason = allSeasons.getJSONObject(key)
+                    val processedSeason = allSeasons.getJSONObject(key)
                     android.util.Log.e("@playerUpdate", processedSeason.toString())
                     if (key.toInt() >= currentSeason) {
-                        //cal matchesPlayed and rankings
-                        val matchesPlayed =
-                                when (processedSeason.has("matchesPlayed")) {
-                                    true -> {
-                                        processedSeason.getJSONObject("" + 10).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 11).getInt("matchesPlayed")
-                                        +processedSeason.getJSONObject("" + 12).getInt("matchesPlayed") + processedSeason.getJSONObject("" + 13).getInt("matchesPlayed")
-                                    }
-                                    false -> 0
-                                }
-                        var rankings = getRankings(processedSeason)
-                        stamp = Timestamp(this.updated * 1000, matchesPlayed, rankings, shots, goals, saves, assists, wins, mvps)
+                        val rankings = getRankings(processedSeason)
+                        stamp = Timestamp(this.updated * 1000, rankings, shots, goals, saves, assists, wins, mvps)
                         if (key.toInt() > currentSeason) {
                             //in case season wasnt set, init season with a stamp
                             currentSeason = key.toInt()
-                            var newestSeason = TimestampMap(stamp)
-                            //seasons[key.toInt()] = newestSeason
+                            val newestSeason = TimestampMap(stamp)
                             season = newestSeason
-                        }
-                        else {
+                        } else {
                             //seasons[key.toInt()]!!.put(stamp)
                             season.put(stamp)
                         }

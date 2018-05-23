@@ -5,4 +5,27 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="unranked">Unranked</string>
+    <string name="bronze1">Bronze 1 Division</string>
+    <string name="bronze2">Bronze 2 Division</string>
+    <string name="bronze3">Bronze 3 Division</string>
+    <string name="silver1">Silver 1 Division</string>
+    <string name="silver2">Silver 2 Division</string>
+    <string name="silver3">Silver 3 Division</string>
+    <string name="gold1">Gold 1 Division</string>
+    <string name="gold2">Gold 2 Division</string>
+    <string name="gold3">Gold 3 Division</string>
+    <string name="plat1">Platinum 1 Division</string>
+    <string name="plat2">Platinum 2 Division</string>
+    <string name="plat3">Platinum 3 Division</string>
+    <string name="dia1">Diamond 1 Division</string>
+    <string name="dia2">Diamond 2 Division</string>
+    <string name="dia3">Diamond 3 Division</string>
+    <string name="champ1">Champion 1 Division</string>
+    <string name="champ2">Champion 2 Division</string>
+    <string name="champ3">Champion 3 Division</string>
+    <string name="grandChamp">Grand Champion</string>
+    <string name="mmr">MMR:</string>
+
+
 </resources>

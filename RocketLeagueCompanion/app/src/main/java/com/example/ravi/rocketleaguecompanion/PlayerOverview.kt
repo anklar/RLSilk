@@ -14,7 +14,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.example.ravi.rlcomp.custom.Player
+import com.example.ravi.rocketleaguecompanion.custom.Player
 import com.example.ravi.rlcomp.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.fragments.GraphFragment
 import com.example.ravi.rocketleaguecompanion.fragments.PlayerFragment
@@ -25,25 +25,26 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.lang.Thread.sleep
 import java.util.*
+import kotlin.concurrent.fixedRateTimer
 
 class PlayerOverview : AppCompatActivity() {
 
     //TODO AppIntro
 
-    //TODO Glide Annotation in Gradle
-//------------------------------------------------------
-    private val BASEURL = "https://api.rocketleaguestats.com/v1/"
+    //------------------------------------------------------
+    private val baseUrl = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
-    private lateinit var player:Player
+    private lateinit var player: Player
     private val playerFragment = PlayerFragment.newInstance()
     private val graphFragment = GraphFragment.newInstance()
     private val generateDummyStats = false
 
-    var dayCount = 0
-    var goalAdd = 0
-    var shotAdd = 0
-    var assistAdd = 0
-    var saveAdd = 0
+    //vars for dummy values
+    private var dayCount = 0
+    private var goalAdd = 0
+    private var shotAdd = 0
+    private var assistAdd = 0
+    private var saveAdd = 0
 
     /**
      *
@@ -51,7 +52,7 @@ class PlayerOverview : AppCompatActivity() {
      *
      */
     private fun requestPlayerStats() {
-        val request = object : JsonObjectRequest(Request.Method.GET, BASEURL + "player?unique_id=" + player.id + "&platform_id=" + player.platform, null,
+        val request = object : JsonObjectRequest(Request.Method.GET, baseUrl + "player?unique_id=" + player.id + "&platform_id=" + player.platform, null,
                 { response ->
                     try {
                         if (generateDummyStats) {
@@ -61,7 +62,7 @@ class PlayerOverview : AppCompatActivity() {
                             updatePlayerStats(response)
                             savePlayer(this)
                         }
-                        refreshIn(response.getLong("nextUpdateAt") - response.getLong("lastRequested"))
+                        //refreshIn(response.getLong("nextUpdateAt") - response.getLong("lastRequested"))
                     } catch (error: JSONException) {
                         error.printStackTrace()
                     }
@@ -86,6 +87,9 @@ class PlayerOverview : AppCompatActivity() {
 
     }
 
+    /**
+     * updates all fragments with the Timestamp data
+     */
     private fun updateVisuals(stamp: Timestamp?) {
         if (stamp != null) {
             playerFragment.updateUI(stamp, this.player)
@@ -93,6 +97,9 @@ class PlayerOverview : AppCompatActivity() {
         }
     }
 
+    /**
+     * generates dummy data for testing
+     */
     fun dummyUpdate() {
         val duelDiff = Random().nextInt(100)
         val duoDiff = Random().nextInt(100)
@@ -120,26 +127,9 @@ class PlayerOverview : AppCompatActivity() {
         updatePlayerStats(JSONObject(dummyResponse))
     }
 
-
     /**
-     * timed trigger for the next update
+     * saves the current player to the storage
      */
-    fun refreshIn(diff: Long) {
-        Thread {
-            try {
-                when {
-                    generateDummyStats -> Thread.sleep(32000)
-                    diff > 42000 -> Thread.sleep(diff)
-                    else -> Thread.sleep(42000)
-                }
-                requestPlayerStats()
-            } catch (e: InterruptedException) {
-
-            }
-        }.start()
-    }
-
-
     fun savePlayer(context: Context) {
         try {
             val out = ObjectOutputStream(context.openFileOutput(this.player.id, Context.MODE_PRIVATE))
@@ -150,8 +140,10 @@ class PlayerOverview : AppCompatActivity() {
         }
     }
 
-    private fun loadPlayer(context: Context, id:String) {
-        //get data from storage
+    /**
+     * loads the player for the given id
+     */
+    private fun loadPlayer(context: Context, id: String) {
         try {
             val input = ObjectInputStream(context.openFileInput(id))
             this.player = input.readObject() as Player
@@ -163,9 +155,11 @@ class PlayerOverview : AppCompatActivity() {
         dayCount *= 86400000
     }
 
+    /**
+     * draws data loaded into the GraphFragment
+     */
     private fun drawLoadedData() {
         //write chart entries
-        //TODO Fix writing to charts && for each bug
         val ps = player.season.values.iterator()
         try {
             do {
@@ -175,7 +169,9 @@ class PlayerOverview : AppCompatActivity() {
         } catch (e: Exception) {
 
         }
-        requestPlayerStats()
+        fixedRateTimer(name = "requestLoop", initialDelay = 0, period = 4200) {
+            requestPlayerStats()
+        }
     }
 
     //-------------------------------------------------------
@@ -198,18 +194,17 @@ class PlayerOverview : AppCompatActivity() {
             }
         })
         val ctx = this
-        if(intent.hasExtra("player")) {
+        if (intent.hasExtra("player")) {
             this.player = Player.fromJSON(JSONObject(intent?.getStringExtra("player")))!!
-        }else {
+        } else {
             this.player = Player("76561198026480940", "Ravi,", 1, "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/5e/5ea978e3b5b400fa44c036597f3f34d479e81d03_full.jpg")
-            android.util.Log.e("@playerSet","settingPlayer failed")
+            android.util.Log.e("@playerSet", "settingPlayer failed")
         }
-        loadPlayer(ctx,player.id)
+        loadPlayer(ctx, player.id)
 
         viewPager.adapter = PagerAdapter(supportFragmentManager, 2)
         tabLayout.setupWithViewPager(viewPager)
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -220,7 +215,6 @@ class PlayerOverview : AppCompatActivity() {
 
 
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -249,7 +243,6 @@ class PlayerOverview : AppCompatActivity() {
             return when (position) {
                 0 -> playerFragment
                 1 -> graphFragment
-            //2 -> searchFragment
                 else -> null
             }
         }
@@ -261,7 +254,6 @@ class PlayerOverview : AppCompatActivity() {
         override fun getPageTitle(position: Int): CharSequence = when (position) {
             0 -> "Player"
             1 -> "Statistic"
-            2 -> "Search"
             else -> ""
         }
 

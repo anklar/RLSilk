@@ -1,9 +1,9 @@
-package com.example.ravi.rlcomp.custom
+package com.example.ravi.rocketleaguecompanion.custom
 
 import java.io.Serializable
 
 /**
- * Created by Ravi on 15.03.2018.
+ * an individual ranking in a queue alone
  */
 
 class Ranking(var mmr: Int, var tier: Int, var div: Int):Serializable
