@@ -30,6 +30,9 @@ import kotlin.concurrent.fixedRateTimer
 class PlayerOverview : AppCompatActivity() {
 
     //TODO AppIntro
+	//TODO Save Last Player
+	//TODO Show already used players
+	//TODO Search feedback
 
     //------------------------------------------------------
     private val baseUrl = "https://api.rocketleaguestats.com/v1/"
