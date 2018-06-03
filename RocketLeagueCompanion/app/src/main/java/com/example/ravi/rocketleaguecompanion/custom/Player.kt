@@ -19,6 +19,17 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
     var season = TimestampMap()
     private var updated: Long = 0
     private var currentSeason: Int = 0
+    private var latestResponseString = ""
+    var latestResponse: JSONObject?
+        get () =
+            try {
+                JSONObject(latestResponseString)
+            } catch (e: Exception) {
+                null
+            }
+        set(jay) {
+            latestResponseString = jay.toString()
+        }
 
 
     companion object {
@@ -29,6 +40,7 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
             return try {
                 val p = Player(playerson.getString("uniqueId"), playerson.getString("displayName"),
                         playerson.getJSONObject("platform").getInt("id"), playerson.getString("avatar"))
+                p.latestResponse = playerson
                 p.update(playerson)
                 p
             } catch (e: Exception) {
@@ -72,7 +84,6 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                     key = it.next()
                 try {
                     val processedSeason = allSeasons.getJSONObject(key)
-                    android.util.Log.e("@playerUpdate", processedSeason.toString())
                     if (key.toInt() >= currentSeason) {
                         val rankings = getRankings(processedSeason)
                         stamp = Timestamp(this.updated * 1000, rankings, shots, goals, saves, assists, wins, mvps)
@@ -122,3 +133,4 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
 
     }
 }
+

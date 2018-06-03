@@ -29,12 +29,9 @@ import kotlin.concurrent.fixedRateTimer
 
 class PlayerOverview : AppCompatActivity() {
 
-    //TODO AppIntro
-	//TODO Save Last Player
-	//TODO Show already used players
-	//TODO Search feedback
-
-    //------------------------------------------------------
+    //TODO fix Dummy
+    //TODO resume on PlayerOverview
+    //TODO Screenshots, Fußnoten
     private val baseUrl = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
     private lateinit var player: Player
@@ -48,6 +45,68 @@ class PlayerOverview : AppCompatActivity() {
     private var shotAdd = 0
     private var assistAdd = 0
     private var saveAdd = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_player_overview)
+
+
+        req = Volley.newRequestQueue(this.applicationContext)
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+
+            }
+        })
+        val ctx = this
+        if (intent.hasExtra("player")) {
+            this.player = Player.fromJSON(JSONObject(intent?.getStringExtra("player")))!!
+        } else {
+            this.player = Player("76561198026480940", "Ravi,", 1, "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/5e/5ea978e3b5b400fa44c036597f3f34d479e81d03_full.jpg")
+            android.util.Log.e("@playerSet", "settingPlayer failed")
+        }
+        loadPlayer(ctx, player.id)
+
+        viewPager.adapter = PagerAdapter(supportFragmentManager, 2)
+        tabLayout.setupWithViewPager(viewPager)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Thread {
+            sleep(2000)
+            runOnUiThread({ drawLoadedData() })
+        }.start()
+
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_player_overview, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        val id = item.itemId
+
+        if (id == R.id.action_settings) {
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
 
     /**
      *
@@ -65,7 +124,6 @@ class PlayerOverview : AppCompatActivity() {
                             updatePlayerStats(response)
                             savePlayer(this)
                         }
-                        //refreshIn(response.getLong("nextUpdateAt") - response.getLong("lastRequested"))
                     } catch (error: JSONException) {
                         error.printStackTrace()
                     }
@@ -77,7 +135,6 @@ class PlayerOverview : AppCompatActivity() {
                 return params
             }
         }
-        android.util.Log.e("@reqQueued", request.url)
         req!!.add(request)
     }
 
@@ -85,9 +142,7 @@ class PlayerOverview : AppCompatActivity() {
      * updates the player with data from the JSON
      */
     fun updatePlayerStats(playerson: JSONObject) {
-        android.util.Log.e("@update", playerson.toString())
         updateVisuals(this.player.update(playerson))
-
     }
 
     /**
@@ -172,72 +227,10 @@ class PlayerOverview : AppCompatActivity() {
         } catch (e: Exception) {
 
         }
-        fixedRateTimer(name = "requestLoop", initialDelay = 0, period = 4200) {
+        fixedRateTimer(name = "requestLoop", initialDelay = 0, period = 42000) {
             requestPlayerStats()
         }
     }
-
-    //-------------------------------------------------------
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player_overview)
-
-        req = Volley.newRequestQueue(this.applicationContext)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-
-            }
-        })
-        val ctx = this
-        if (intent.hasExtra("player")) {
-            this.player = Player.fromJSON(JSONObject(intent?.getStringExtra("player")))!!
-        } else {
-            this.player = Player("76561198026480940", "Ravi,", 1, "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/5e/5ea978e3b5b400fa44c036597f3f34d479e81d03_full.jpg")
-            android.util.Log.e("@playerSet", "settingPlayer failed")
-        }
-        loadPlayer(ctx, player.id)
-
-        viewPager.adapter = PagerAdapter(supportFragmentManager, 2)
-        tabLayout.setupWithViewPager(viewPager)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Thread {
-            sleep(2000)
-            runOnUiThread({ drawLoadedData() })
-        }.start()
-
-
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_player_overview, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-        if (id == R.id.action_settings) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
 
     inner class PagerAdapter(fm: FragmentManager, private var tabCount: Int) : FragmentPagerAdapter(fm) {
 

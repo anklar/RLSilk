@@ -6,4 +6,4 @@ import java.io.Serializable
  * an individual ranking in a queue alone
  */
 
-class Ranking(var mmr: Int, var tier: Int, var div: Int):Serializable
+class Ranking(var mmr: Int, var tier: Int, var div: Int) : Serializable

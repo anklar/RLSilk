@@ -8,10 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.TextView
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -21,15 +17,19 @@ import com.bumptech.glide.Glide
 import com.example.ravi.rocketleaguecompanion.custom.Player
 import kotlinx.android.synthetic.main.activity_search.*
 import org.json.JSONException
-import org.json.JSONObject
 import java.util.*
+import android.preference.PreferenceManager
+import android.widget.*
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 
 class SearchActivity : ListActivity() {
 
     private val baseUrl = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
-    private var playerDataList = LinkedList<JSONObject>()
+    private var foundPlayers = LinkedList<Player>()
+    private var recentlyUsedPlayers: HashMap<String, Player> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,40 +40,76 @@ class SearchActivity : ListActivity() {
     override fun onStart() {
         super.onStart()
 
-        searchButton.setOnClickListener {
-            android.util.Log.e("@Searchclick", searchText.text.toString())
-            searchPlayers(searchText.text.toString())
+
+        //run AppIntro on the initial start
+        val sp = PreferenceManager.getDefaultSharedPreferences(baseContext)
+        if (!sp.getBoolean("first", false)) {
+            val editor = sp.edit()
+            editor.putBoolean("first", true)
+            editor.apply()
+            val intent = Intent(this, IntroActivity::class.java)
+            startActivity(intent)
+        } else {
+            //this isnt the first start, there may be data to load
+            try {
+                //Load recent Player Objects from the Storage
+                val input = ObjectInputStream(applicationContext.openFileInput("recentlyUsedPlayers"))
+                recentlyUsedPlayers = input.readObject() as HashMap<String, Player>
+                foundPlayers = LinkedList(recentlyUsedPlayers.values)
+                handleSearchResponse(LinkedList(recentlyUsedPlayers.values))
+                input.close()
+
+
+            } catch (e: Exception) {
+                recentlyUsedPlayers = HashMap()
+            }
+
         }
 
+
+        //Bind function to the searchButton
+        searchButton.setOnClickListener {
+            if (searchText.text.toString() != "")
+                searchPlayers(searchText.text.toString())
+        }
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val intent = Intent(this, PlayerOverview::class.java).apply {
-                putExtra("player", playerDataList[position].toString())
+                putExtra("player", foundPlayers[position].latestResponse.toString())
             }
+            //save selected Player to add him to the recently used list
+            val output = ObjectOutputStream(applicationContext.openFileOutput("recentlyUsedPlayers", Context.MODE_PRIVATE))
+            recentlyUsedPlayers[foundPlayers[position].id] = foundPlayers[position]
+            output.writeObject(recentlyUsedPlayers)
+            output.close()
             startActivity(intent)
         }
+
+
     }
 
     /**
      * fires a search request to find players to a given name
      */
     private fun searchPlayers(name: String) {
+        searchProgressBar.isIndeterminate = true
+        searchProgressBar.visibility = View.VISIBLE
         val request = object : JsonObjectRequest(Request.Method.GET, baseUrl + "search/players?display_name=" + name, null,
                 { response ->
                     try {
                         val jayray = response.getJSONArray("data")
-                        val foundPlayers = LinkedList<Player>()
+                        foundPlayers = LinkedList()
                         for (i in 0 until jayray.length()) {
                             foundPlayers.add(Player.fromJSON(jayray.getJSONObject(i))!!)
-                            playerDataList.add(jayray.getJSONObject(i))
                         }
                         handleSearchResponse(foundPlayers)
-                        //Display players in ScrollView
+                        searchProgressBar.visibility = View.INVISIBLE
                     } catch (error: JSONException) {
 
                     }
                 }, { error ->
             android.util.Log.e("@playerSearch", error.message)
+            searchProgressBar.visibility = View.INVISIBLE
         }) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
@@ -90,8 +126,12 @@ class SearchActivity : ListActivity() {
      * creates adapter that puts a list of found players into the listview
      */
     private fun handleSearchResponse(playerData: LinkedList<Player>) {
+        if (playerData.isEmpty()) {
+            Toast.makeText(this, "Didn't find any players for: " + searchText.text.toString(), Toast.LENGTH_LONG).show()
+        } else {
             val customAdapter = CustomAdapter(this, playerData)
             listView.adapter = customAdapter
+        }
     }
 
     /**
@@ -116,15 +156,26 @@ class SearchActivity : ListActivity() {
         override fun getView(i: Int, v: View?, viewGroup: ViewGroup): View {
 
             val view = inflater.inflate(R.layout.player_tile, null)
-            val playerName = view.findViewById<TextView>(R.id.playerName)
-            val playerImage = view.findViewById<ImageView>(R.id.playerImage)
+            val playerName = view.findViewById<TextView>(R.id.userName)
+            val playerImage = view.findViewById<ImageView>(R.id.profilePic)
+            val platform = view.findViewById<TextView>(R.id.platform)
 
             try {
-                Glide.with(context).load(foundPlayers[i].avatarUrl).into(playerImage)
+                if (foundPlayers[i].avatarUrl == "null")
+                    Glide.with(context).load("https://steamuserimages-a.akamaihd.net/ugc/868480752636433334/1D2881C5C9B3AD28A1D8852903A8F9E1FF45C2C8/").into(playerImage)
+                else
+                    Glide.with(context).load(foundPlayers[i].avatarUrl).into(playerImage)
             } catch (e: Exception) {
 
             }
             playerName.text = foundPlayers[i].name
+            if (platform != null)
+                when (foundPlayers[i].platform) {
+                    1 -> platform.text = getString(R.string.steam)
+                    2 -> platform.text = getString(R.string.ps4)
+                    3 -> platform.text = getString(R.string.xbox)
+                    else -> platform.text = ""
+                }
             return view
         }
     }

@@ -143,11 +143,21 @@ class PlayerFragment : Fragment() {
              */
     fun updateUI(stamp: Timestamp?, player: Player) {
         try {
-            Glide.with(this).load(player.avatarUrl).into(profilePic)
+            if (player.avatarUrl == "null")
+                Glide.with(this).load("https://steamuserimages-a.akamaihd.net/ugc/868480752636433334/1D2881C5C9B3AD28A1D8852903A8F9E1FF45C2C8/").into(profilePic)
+            else
+                Glide.with(this).load(player.avatarUrl).into(profilePic)
         } catch (e: Exception) {
             android.util.Log.e("@avatar", e.message)
         }
         userName.text = player.name
+        if (platform != null)
+            when (player.platform) {
+                1 -> platform.text = getString(R.string.steam)
+                2 -> platform.text = getString(R.string.ps4)
+                3 -> platform.text = getString(R.string.xbox)
+                else -> platform.text = ""
+            }
         if (stamp != null) {
             //updated image and text for each rank if changed
             setRankVisuals(duelImg, duelTxt, stamp.rankingList[0].tier, stamp.rankingList[0].div)

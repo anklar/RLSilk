@@ -49,7 +49,6 @@ class GraphFragment : Fragment() {
      * puts rolling shot percentage on the line chart
      */
     private fun addTotalShotPercentage(recentStamp: Timestamp) {
-        android.util.Log.e("@totl%", "Putting total% on " + recentStamp.time.toFloat() + " " + recentStamp.getTotalShotPercentage())
         val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
                 Date(totalShotPercentageDataSet.getEntryForIndex(totalShotPercentageDataSet.entryCount - 1).x.toLong())).toInt()
         if (recentStamp.day == lastEntryDay)
@@ -63,9 +62,6 @@ class GraphFragment : Fragment() {
      * puts daily shot percentage on the line chart
      */
     private fun addCurrentShotPercentage(recentStamp: Timestamp, oldStamp: Timestamp) {
-        //currentShotPercentageDataSet?.removeEntryByXValue(recentStamp.day.toFloat())
-        android.util.Log.e("@cur%", "Putting current % on " + recentStamp.time.toFloat() + " " +
-                recentStamp.getShotPerc(oldStamp))
         val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
                 Date(currentShotPercentageDataSet.getEntryForIndex(currentShotPercentageDataSet.entryCount - 1).x.toLong())).toInt()
         if (recentStamp.day == lastEntryDay)
@@ -82,8 +78,6 @@ class GraphFragment : Fragment() {
      */
     private fun addMmr(recentStamp: Timestamp) {
         for (i in recentStamp.rankingList.indices) {
-            android.util.Log.e("@addMmr", "Putting mmr for Queue " + i + " on " + recentStamp.time.toFloat() + " " +
-                    recentStamp.rankingList[i].mmr.toFloat())
             val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
                     Date(skillDataSetList[i].getEntryForIndex(skillDataSetList[i].entryCount - 1).x.toLong())).toInt()
             if (recentStamp.day == lastEntryDay)

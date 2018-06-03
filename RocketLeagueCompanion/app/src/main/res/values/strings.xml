@@ -26,6 +26,10 @@
     <string name="champ3">Champion 3 Division</string>
     <string name="grandChamp">Grand Champion</string>
     <string name="mmr">MMR:</string>
+    <string name="steam">Steam</string>
+    <string name="ps4">PS4</string>
+    <string name="xbox">XBox</string>
+    <string name="noConnection">You are not connected to the Internet</string>
 
 
 </resources>
