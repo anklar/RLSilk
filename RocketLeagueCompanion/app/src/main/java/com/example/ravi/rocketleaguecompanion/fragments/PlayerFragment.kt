@@ -29,6 +29,7 @@ class PlayerFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         toSearchButton.setOnClickListener {
+            var file = File
             val intent = Intent(this.activity, SearchActivity::class.java)
             startActivity(intent)
         }

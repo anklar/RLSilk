@@ -18,7 +18,10 @@ class TimestampMap : TreeMap<Int, Timestamp>, Serializable {
      * adds a Timestamp to the map
      */
     fun put(item: Timestamp) {
-        this[item.day] = item
+        if(this.isEmpty())
+            this[0] = item
+        else
+            this[item.day] = item
     }
 
 
