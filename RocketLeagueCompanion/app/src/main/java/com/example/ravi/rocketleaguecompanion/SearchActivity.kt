@@ -20,6 +20,7 @@ import org.json.JSONException
 import java.util.*
 import android.preference.PreferenceManager
 import android.widget.*
+import java.io.FileNotFoundException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
@@ -35,6 +36,21 @@ class SearchActivity : ListActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         req = Volley.newRequestQueue(this.applicationContext)
+    }
+
+    override fun onResume(){
+        super.onResume()
+        try {
+            val input = ObjectInputStream(applicationContext.openFileInput("selectedPlayer"))
+            val player = input.readObject() as Player
+            input.close()
+                val intent = Intent(this, PlayerOverview::class.java).apply {
+                    putExtra("player", player.latestResponse.toString())
+                }
+                startActivity(intent)
+        }catch(e:FileNotFoundException){
+            android.util.Log.e("@ResumEx",e.message)
+        }
     }
 
     override fun onStart() {
@@ -82,6 +98,10 @@ class SearchActivity : ListActivity() {
             recentlyUsedPlayers[foundPlayers[position].id] = foundPlayers[position]
             output.writeObject(recentlyUsedPlayers)
             output.close()
+            //save selected pplayer for onResume()
+            val saveInstanceOutput = ObjectOutputStream(applicationContext.openFileOutput("selectedPlayer", Context.MODE_PRIVATE))
+            saveInstanceOutput.writeObject(foundPlayers[position])
+            saveInstanceOutput.close()
             startActivity(intent)
         }
 

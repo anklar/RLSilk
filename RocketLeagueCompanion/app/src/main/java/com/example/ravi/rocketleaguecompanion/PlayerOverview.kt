@@ -29,8 +29,6 @@ import kotlin.concurrent.fixedRateTimer
 
 class PlayerOverview : AppCompatActivity() {
 
-    //TODO fix Dummy
-    //TODO resume on PlayerOverview
     //TODO Screenshots, Fußnoten
     private val baseUrl = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
@@ -175,7 +173,8 @@ class PlayerOverview : AppCompatActivity() {
                 "\"4\":{\"10\":{\"rankPoints\":697,\"matchesPlayed\":266,\"tier\":8,\"division\":2},\"11\":{\"rankPoints\":783,\"matchesPlayed\":828,\"tier\":9,\"division\":2},\"12\":{\"rankPoints\":656,\"matchesPlayed\":369,\"tier\":8,\"division\":0},\"13\":{\"rankPoints\":902,\"matchesPlayed\":758,\"tier\":11,\"division\":1}}," +
                 "\"5\":{\"10\":{\"rankPoints\":782,\"matchesPlayed\":402,\"tier\":10,\"division\":0},\"11\":{\"rankPoints\":779,\"matchesPlayed\":1488,\"tier\":9,\"division\":2},\"12\":{\"rankPoints\":737,\"matchesPlayed\":8,\"tier\":0,\"division\":0},\"13\":{\"rankPoints\":1049,\"matchesPlayed\":1406,\"tier\":13,\"division\":1}}," +
                 "\"6\":{\"10\":{\"rankPoints\":738,\"matchesPlayed\":86,\"tier\":10,\"division\":3},\"11\":{\"rankPoints\":850,\"matchesPlayed\":374,\"tier\":12,\"division\":0},\"12\":{\"rankPoints\":899,\"matchesPlayed\":262,\"tier\":13,\"division\":1},\"13\":{\"rankPoints\":1123,\"matchesPlayed\":792,\"tier\":15,\"division\":1}}," +
-                "\"7\":{" +
+                "\"7\":{\"10\":{\"rankPoints\":738,\"matchesPlayed\":86,\"tier\":10,\"division\":3},\"11\":{\"rankPoints\":850,\"matchesPlayed\":374,\"tier\":12,\"division\":0},\"12\":{\"rankPoints\":899,\"matchesPlayed\":262,\"tier\":13,\"division\":1},\"13\":{\"rankPoints\":1123,\"matchesPlayed\":792,\"tier\":15,\"division\":1}}," +
+                "\"8\":{" +
                 "\"10\":{\"rankPoints\":" + (821 + duelDiff) + ",\"matchesPlayed\":204,\"tier\":12,\"division\":2},\"" +
                 "11\":{\"rankPoints\":" + (1001 + duoDiff) + ",\"matchesPlayed\":403,\"tier\":14,\"division\":0},\"" +
                 "12\":{\"rankPoints\":" + (872 + standDiff) + ",\"matchesPlayed\":247,\"tier\":13,\"division\":1},\"" +
@@ -227,8 +226,17 @@ class PlayerOverview : AppCompatActivity() {
         } catch (e: Exception) {
 
         }
-        fixedRateTimer(name = "requestLoop", initialDelay = 0, period = 42000) {
-            requestPlayerStats()
+        if (generateDummyStats) {
+            Thread({
+                for (i in 0..10) {
+                    requestPlayerStats()
+                    sleep(5000)
+                }
+            }).start()
+        } else {
+            fixedRateTimer(name = "requestLoop", initialDelay = 0, period = 42000) {
+                requestPlayerStats()
+            }
         }
     }
 

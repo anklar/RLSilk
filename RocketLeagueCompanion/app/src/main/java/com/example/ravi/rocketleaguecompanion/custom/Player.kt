@@ -58,7 +58,6 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
         try {
             if (playerson.has("displayName")) {
                 this.name = playerson.getString("displayName")
-                android.util.Log.e("name", this.name)
             }
             if (playerson.has("avatar"))
                 this.avatarUrl = playerson.getString("avatar").replace("\\", "")
