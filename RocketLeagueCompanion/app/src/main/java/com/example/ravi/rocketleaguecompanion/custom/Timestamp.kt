@@ -15,7 +15,7 @@ class Timestamp(val time: Long, val rankingList: Array<Ranking>,
      */
     fun getShotPerc(old: Timestamp): Float {
         return when ((shots.toFloat() - old.shots.toFloat())) {
-            0f -> 1f
+            0f -> -1f
             else -> (goals.toFloat() - old.goals.toFloat()) / (shots.toFloat() - old.shots.toFloat()) * 100f
         }
     }
@@ -25,7 +25,7 @@ class Timestamp(val time: Long, val rankingList: Array<Ranking>,
      */
     fun getTotalShotPercentage(): Float {
         return when (shots) {
-            0 -> 1f
+            0 -> 100f
             else -> goals.toFloat() / shots.toFloat() * 100f
         }
     }

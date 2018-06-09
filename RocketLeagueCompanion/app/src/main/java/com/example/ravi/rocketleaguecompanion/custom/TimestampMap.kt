@@ -7,8 +7,7 @@ import java.util.*
 
 class TimestampMap : TreeMap<Int, Timestamp>, Serializable {
     constructor(item: Timestamp) : super() {
-        val dateString = SimpleDateFormat("yyyyMMdd").format(Date(item.time)).toInt()
-        this[dateString] = item
+        this[0] = item
     }
 
     constructor() : super()
