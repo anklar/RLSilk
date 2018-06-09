@@ -40,16 +40,18 @@ class SearchActivity : ListActivity() {
 
     override fun onResume(){
         super.onResume()
-        try {
-            val input = ObjectInputStream(applicationContext.openFileInput("selectedPlayer"))
-            val player = input.readObject() as Player
-            input.close()
+        if( !intent.hasExtra("searchAgain")) {
+            try {
+                val input = ObjectInputStream(applicationContext.openFileInput("selectedPlayer"))
+                val player = input.readObject() as Player
+                input.close()
                 val intent = Intent(this, PlayerOverview::class.java).apply {
                     putExtra("player", player.latestResponse.toString())
                 }
                 startActivity(intent)
-        }catch(e:FileNotFoundException){
-            android.util.Log.e("@ResumEx",e.message)
+            } catch (e: FileNotFoundException) {
+                android.util.Log.e("@ResumEx", e.message)
+            }
         }
     }
 
@@ -98,7 +100,7 @@ class SearchActivity : ListActivity() {
             recentlyUsedPlayers[foundPlayers[position].id] = foundPlayers[position]
             output.writeObject(recentlyUsedPlayers)
             output.close()
-            //save selected pplayer for onResume()
+            //save selected player for onResume()
             val saveInstanceOutput = ObjectOutputStream(applicationContext.openFileOutput("selectedPlayer", Context.MODE_PRIVATE))
             saveInstanceOutput.writeObject(foundPlayers[position])
             saveInstanceOutput.close()
