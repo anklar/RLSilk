@@ -29,7 +29,7 @@ import kotlin.concurrent.fixedRateTimer
 
 class PlayerOverview : AppCompatActivity() {
 
-    //TODO Screenshots, Fußnoten
+    //TODO Fußnoten
     private val baseUrl = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
     private lateinit var player: Player
