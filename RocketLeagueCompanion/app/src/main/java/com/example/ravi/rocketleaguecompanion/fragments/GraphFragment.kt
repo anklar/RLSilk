@@ -68,9 +68,9 @@ class GraphFragment : Fragment() {
         //if last entry was on the same day, delete it
             currentShotPercentageDataSet.removeEntryByXValue(recentStamp.day.toFloat())
 
-            currentShotPercentageDataSet.addEntry(Entry(recentStamp.time.toFloat(),
-                    recentStamp.getShotPerc(oldStamp)
-            ))
+        currentShotPercentageDataSet.addEntry(Entry(recentStamp.time.toFloat(),
+                recentStamp.getShotPerc(oldStamp)
+        ))
     }
 
     /**
