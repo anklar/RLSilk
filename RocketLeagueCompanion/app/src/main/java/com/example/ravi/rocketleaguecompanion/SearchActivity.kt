@@ -38,9 +38,9 @@ class SearchActivity : ListActivity() {
         req = Volley.newRequestQueue(this.applicationContext)
     }
 
-    override fun onResume(){
+    override fun onResume() {
         super.onResume()
-        if( !intent.hasExtra("searchAgain")) {
+        if (!intent.hasExtra("searchAgain")) {
             try {
                 val input = ObjectInputStream(applicationContext.openFileInput("selectedPlayer"))
                 val player = input.readObject() as Player
@@ -72,6 +72,7 @@ class SearchActivity : ListActivity() {
             try {
                 //Load recent Player Objects from the Storage
                 val input = ObjectInputStream(applicationContext.openFileInput("recentlyUsedPlayers"))
+                @Suppress("UNCHECKED_CAST") //The only possible Object to be read is a HashMap<String, Player> if file is corrupt, the exception is caught and resolved
                 recentlyUsedPlayers = input.readObject() as HashMap<String, Player>
                 foundPlayers = LinkedList(recentlyUsedPlayers.values)
                 handleSearchResponse(LinkedList(recentlyUsedPlayers.values))

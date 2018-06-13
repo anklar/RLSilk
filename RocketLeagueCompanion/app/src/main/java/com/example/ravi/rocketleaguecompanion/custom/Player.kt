@@ -1,6 +1,5 @@
 package com.example.ravi.rocketleaguecompanion.custom
 
-import com.example.ravi.rlcomp.custom.Timestamp
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.Serializable
@@ -85,7 +84,7 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                     val processedSeason = allSeasons.getJSONObject(key)
                     if (key.toInt() >= currentSeason) {
                         val rankings = getRankings(processedSeason)
-                        stamp = Timestamp(this.updated * 1000, rankings, shots, goals, saves, assists, wins, mvps)
+                        stamp = Timestamp((this.updated) * 1000, rankings, shots, goals, saves, assists, wins, mvps)
                         if (key.toInt() > currentSeason) {
                             //in case season wasnt set, init season with a stamp
                             currentSeason = key.toInt()

@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.ravi.rocketleaguecompanion.custom.Player
-import com.example.ravi.rlcomp.custom.Timestamp
+import com.example.ravi.rocketleaguecompanion.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
 import com.example.ravi.rocketleaguecompanion.R.drawable.*
 import com.example.ravi.rocketleaguecompanion.R.string.*
@@ -30,9 +30,9 @@ class PlayerFragment : Fragment() {
         super.onStart()
         toSearchButton.setOnClickListener {
             val intent = Intent(this.activity, SearchActivity::class.java)
-                    intent.apply {
-                        putExtra("searchAgain", true)
-                    }
+            intent.apply {
+                putExtra("searchAgain", true)
+            }
             startActivity(intent)
         }
     }
@@ -141,6 +141,7 @@ class PlayerFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
+    //Warning suggests to export Strings further. This isn't necessary, because e.g."MMR: 42" is the same in every language anyway
             /**
              * updates all UI elements with a Timestamp
              */

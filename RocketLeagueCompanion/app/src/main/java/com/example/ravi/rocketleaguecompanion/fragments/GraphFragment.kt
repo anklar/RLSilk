@@ -1,12 +1,13 @@
 package com.example.ravi.rocketleaguecompanion.fragments
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.ravi.rlcomp.custom.Timestamp
+import com.example.ravi.rocketleaguecompanion.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
 import com.example.ravi.rocketleaguecompanion.custom.DateAxisFormatter
 import com.github.mikephil.charting.data.*
@@ -18,7 +19,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.android.synthetic.main.fragment_graph.*
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class GraphFragment : Fragment() {
 
@@ -48,44 +48,59 @@ class GraphFragment : Fragment() {
     /**
      * puts rolling shot percentage on the line chart
      */
+    @SuppressLint("SimpleDateFormat")
+    //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
     private fun addTotalShotPercentage(recentStamp: Timestamp) {
-        val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
-                Date(totalShotPercentageDataSet.getEntryForIndex(totalShotPercentageDataSet.entryCount - 1).x.toLong())).toInt()
-        if (recentStamp.day == lastEntryDay)
+        val lastEntryDay = SimpleDateFormat("dd.MM.yy").format(Date(totalShotPercentageDataSet.getEntryForXValue(recentStamp.day.toFloat(), recentStamp.getTotalShotPercentage()).x.toLong()))
+        if (recentStamp.date == lastEntryDay)
         //if last entry was on the same day, delete it
             totalShotPercentageDataSet.removeEntryByXValue(recentStamp.day.toFloat())
 
-        totalShotPercentageDataSet.addEntry(Entry(recentStamp.time.toFloat(), recentStamp.getTotalShotPercentage()))
+        totalShotPercentageDataSet.addEntry(
+                Entry(recentStamp.time.toFloat(),
+                        recentStamp.getTotalShotPercentage()
+                ))
     }
 
     /**
      * puts daily shot percentage on the line chart
      */
+    @SuppressLint("SimpleDateFormat")
+    //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
     private fun addCurrentShotPercentage(recentStamp: Timestamp, oldStamp: Timestamp) {
-        val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
-                Date(currentShotPercentageDataSet.getEntryForIndex(currentShotPercentageDataSet.entryCount - 1).x.toLong())).toInt()
-        if (recentStamp.day == lastEntryDay)
+        val lastEntryDay = SimpleDateFormat("dd.MM.yy").format(Date(currentShotPercentageDataSet.getEntryForXValue(recentStamp.day.toFloat(), recentStamp.getTotalShotPercentage()).x.toLong()))
+        if (recentStamp.date == lastEntryDay)
         //if last entry was on the same day, delete it
             currentShotPercentageDataSet.removeEntryByXValue(recentStamp.day.toFloat())
-
-        currentShotPercentageDataSet.addEntry(Entry(recentStamp.time.toFloat(),
-                recentStamp.getShotPerc(oldStamp)
-        ))
+        if (recentStamp.getShotPerc(oldStamp) >= 0) {
+            currentShotPercentageDataSet.addEntry(
+                    Entry(recentStamp.time.toFloat(),
+                            recentStamp.getShotPerc(oldStamp)
+                    ))
+        } else {
+            currentShotPercentageDataSet.addEntry(
+                    Entry(recentStamp.time.toFloat(),
+                            0f
+                    ))
+        }
     }
 
     /**
      * puts mmr on the line chart
      */
+    @SuppressLint("SimpleDateFormat")
+    //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
     private fun addMmr(recentStamp: Timestamp) {
         for (i in recentStamp.rankingList.indices) {
-            val lastEntryDay = SimpleDateFormat("yyyyMMdd").format(
-                    Date(skillDataSetList[i].getEntryForIndex(skillDataSetList[i].entryCount - 1).x.toLong())).toInt()
-            if (recentStamp.day == lastEntryDay)
+            val lastEntryDay = SimpleDateFormat("dd.MM.yy").format(Date(skillDataSetList[i].getEntryForXValue(recentStamp.day.toFloat(), recentStamp.getTotalShotPercentage()).x.toLong()))
+            if (recentStamp.date == lastEntryDay)
             //if last entry was on the same day, delete it
                 skillDataSetList[i].removeEntryByXValue(recentStamp.day.toFloat())
-            skillDataSetList[i].addEntry(Entry(recentStamp.time.toFloat(),
-                    recentStamp.rankingList[i].mmr.toFloat()
-            ))
+
+            skillDataSetList[i].addEntry(
+                    Entry(recentStamp.time.toFloat(),
+                            recentStamp.rankingList[i].mmr.toFloat()
+                    ))
         }
     }
 
@@ -100,7 +115,7 @@ class GraphFragment : Fragment() {
         skillChart.axisLeft.axisMaximum = maxOf(maxOf(recentStamp.rankingList[0].mmr, recentStamp.rankingList[1].mmr, recentStamp.rankingList[2].mmr), recentStamp.rankingList[3].mmr).toFloat() + 200
         //init if necessary, or just fill in data
         if (initStart) {
-            initCharts(recentStamp, oldStamp)
+            initCharts(recentStamp)
             initStart = false
         } else {
             addTotalShotPercentage(recentStamp)
@@ -119,7 +134,7 @@ class GraphFragment : Fragment() {
     /**
      * initializes all charts and puts the first stamp on it
      */
-    private fun initCharts(recentStamp: Timestamp, oldStamp: Timestamp) {
+    private fun initCharts(recentStamp: Timestamp) {
         //initalize shotPercChart
         //create each graph and set colors
         val x = recentStamp.time.toFloat()
@@ -133,7 +148,7 @@ class GraphFragment : Fragment() {
         totalShotPercentageDataSet.setCircleColor(ColorTemplate.rgb(totalShotPercColor))
 
         currentShotPercentageDataSet = LineDataSet(arrayListOf(Entry(
-                x, recentStamp.getShotPerc(oldStamp))), "Current Shot Percentage")
+                x, 0f)), "Current Shot Percentage")
         currentShotPercentageDataSet.color = ColorTemplate.rgb(currentShotPercColor)
         currentShotPercentageDataSet.setCircleColor(ColorTemplate.rgb(currentShotPercColor))
 

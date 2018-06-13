@@ -15,7 +15,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.ravi.rocketleaguecompanion.custom.Player
-import com.example.ravi.rlcomp.custom.Timestamp
+import com.example.ravi.rocketleaguecompanion.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.fragments.GraphFragment
 import com.example.ravi.rocketleaguecompanion.fragments.PlayerFragment
 import kotlinx.android.synthetic.main.activity_player_overview.*
@@ -29,7 +29,6 @@ import kotlin.concurrent.fixedRateTimer
 
 class PlayerOverview : AppCompatActivity() {
 
-    //TODO Fußnoten
     private val baseUrl = "https://api.rocketleaguestats.com/v1/"
     private var req: RequestQueue? = null
     private lateinit var player: Player

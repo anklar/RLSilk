@@ -1,6 +1,6 @@
-package com.example.ravi.rlcomp.custom
+package com.example.ravi.rocketleaguecompanion.custom
 
-import com.example.ravi.rocketleaguecompanion.custom.Ranking
+import android.annotation.SuppressLint
 import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
@@ -8,7 +8,13 @@ import java.util.*
 class Timestamp(val time: Long, val rankingList: Array<Ranking>,
                 val shots: Int, val goals: Int, val saves: Int, val assists: Int, val wins: Int, val mvps: Int) : Serializable {
     val day: Int
+        @SuppressLint("SimpleDateFormat")
+        //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
         get () = SimpleDateFormat("yyyyMMdd").format(Date(this.time)).toInt()
+    val date: String
+        @SuppressLint("SimpleDateFormat")
+        //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
+        get () = SimpleDateFormat("dd.MM.yy").format(Date(this.time))
 
     /**
      * returns the shot percentage since old Timestamp
