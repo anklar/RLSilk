@@ -5,7 +5,7 @@ import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Timestamp(val time: Long, val rankingList: Array<Ranking>,
+class Timestamp(var time: Long, val rankingList: Array<Ranking>,
                 val shots: Int, val goals: Int, val saves: Int, val assists: Int, val wins: Int, val mvps: Int) : Serializable {
     val day: Int
         @SuppressLint("SimpleDateFormat")
@@ -15,6 +15,18 @@ class Timestamp(val time: Long, val rankingList: Array<Ranking>,
         @SuppressLint("SimpleDateFormat")
         //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
         get () = SimpleDateFormat("dd.MM.yy").format(Date(this.time))
+
+    /**
+     * returns an array with mmr change in each queue
+     */
+    fun getRankingDifferential(old: Timestamp): Array<Int> {
+        return arrayOf(
+                old.rankingList[0].mmr - this.rankingList[0].mmr,
+                old.rankingList[1].mmr - this.rankingList[1].mmr,
+                old.rankingList[2].mmr - this.rankingList[2].mmr,
+                old.rankingList[3].mmr - this.rankingList[3].mmr
+        )
+    }
 
     /**
      * returns the shot percentage since old Timestamp

@@ -5,6 +5,8 @@
     <color name="colorPrimaryDark">#00005f</color>
     <color name="colorAccent">#FF4081</color>
     <color name="currentShotPercGraph">#5Fa161</color>
+    <color name="darkGreen">#006600</color>
+    <color name="darkRed">#AA0000</color>
     <color name="totalShotPercGraph">#F42A3B</color>
     <color name="duelGraph">#FFFF00</color>
     <color name="duoGraph">#5Fa1FF</color>

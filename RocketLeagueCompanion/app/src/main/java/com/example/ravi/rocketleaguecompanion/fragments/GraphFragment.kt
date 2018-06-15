@@ -2,6 +2,7 @@ package com.example.ravi.rocketleaguecompanion.fragments
 
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import com.example.ravi.rocketleaguecompanion.custom.Timestamp
 import com.example.ravi.rocketleaguecompanion.R
 import com.example.ravi.rocketleaguecompanion.custom.DateAxisFormatter
+import com.example.ravi.rocketleaguecompanion.custom.Player
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.github.mikephil.charting.data.PieData
@@ -17,8 +19,8 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import kotlinx.android.synthetic.main.fragment_graph.*
-import java.text.SimpleDateFormat
-import java.util.*
+import org.jetbrains.anko.textColor
+import kotlin.math.sign
 
 class GraphFragment : Fragment() {
 
@@ -33,6 +35,7 @@ class GraphFragment : Fragment() {
     private lateinit var skillDataSetList: Array<LineDataSet>
     private lateinit var balanceDataSet: PieDataSet
     private var initStart = true
+    private lateinit var player: Player
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -51,10 +54,9 @@ class GraphFragment : Fragment() {
     @SuppressLint("SimpleDateFormat")
     //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
     private fun addTotalShotPercentage(recentStamp: Timestamp) {
-        val lastEntryDay = SimpleDateFormat("dd.MM.yy").format(Date(totalShotPercentageDataSet.getEntryForXValue(recentStamp.day.toFloat(), recentStamp.getTotalShotPercentage()).x.toLong()))
-        if (recentStamp.date == lastEntryDay)
+        if (player.season.size == totalShotPercentageDataSet.entryCount)
         //if last entry was on the same day, delete it
-            totalShotPercentageDataSet.removeEntryByXValue(recentStamp.day.toFloat())
+            totalShotPercentageDataSet.removeLast()
 
         totalShotPercentageDataSet.addEntry(
                 Entry(recentStamp.time.toFloat(),
@@ -68,10 +70,10 @@ class GraphFragment : Fragment() {
     @SuppressLint("SimpleDateFormat")
     //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
     private fun addCurrentShotPercentage(recentStamp: Timestamp, oldStamp: Timestamp) {
-        val lastEntryDay = SimpleDateFormat("dd.MM.yy").format(Date(currentShotPercentageDataSet.getEntryForXValue(recentStamp.day.toFloat(), recentStamp.getTotalShotPercentage()).x.toLong()))
-        if (recentStamp.date == lastEntryDay)
+        if (player.season.size == currentShotPercentageDataSet.entryCount)
         //if last entry was on the same day, delete it
-            currentShotPercentageDataSet.removeEntryByXValue(recentStamp.day.toFloat())
+            currentShotPercentageDataSet.removeLast()
+
         if (recentStamp.getShotPerc(oldStamp) >= 0) {
             currentShotPercentageDataSet.addEntry(
                     Entry(recentStamp.time.toFloat(),
@@ -86,16 +88,87 @@ class GraphFragment : Fragment() {
     }
 
     /**
+     *updates daily textfields with the current daily stats
+     */
+    @SuppressLint("SetTextI18n")   // NUMBER% doesn't need to be extracted
+    private fun updateDailyCard(recentStamp: Timestamp, oldStamp: Timestamp) {
+        val rankingDiff = recentStamp.getRankingDifferential(oldStamp)
+        dailyShotPercTxt.text = "${recentStamp.getShotPerc(oldStamp).toInt()}%"
+        dailyGoalsTxt.text = "${recentStamp.goals - oldStamp.goals}"
+        dailyShotsTxt.text = "${recentStamp.shots - oldStamp.shots}"
+
+        //update difference of the fields with +-DIFF and recolor it in red(-) or green(+) or black(0)
+        when {
+            rankingDiff[0] < 0 -> {
+                dailyDuelTxt.text = "${rankingDiff[0]}"
+                dailyDuelTxt.textColor = ColorTemplate.rgb("#AA0000")
+            }
+            rankingDiff[0] > 0 -> {
+                dailyDuelTxt.text = "+ ${rankingDiff[0]}"
+                dailyDuelTxt.textColor = ColorTemplate.rgb("#008800")
+            }
+            else -> {
+                dailyDuelTxt.text = "${rankingDiff[0]}"
+                dailyDuelTxt.textColor = ColorTemplate.rgb("#00005f")
+            }
+        }
+
+        when {
+            rankingDiff[1] < 0 -> {
+                dailyDuoTxt.text = "${rankingDiff[1]}"
+                dailyDuoTxt.textColor = ColorTemplate.rgb("#AA0000")
+            }
+            rankingDiff[1] > 0 -> {
+                dailyDuoTxt.text = "+ ${rankingDiff[1]}"
+                dailyDuoTxt.textColor = ColorTemplate.rgb("#008800")
+            }
+            else -> {
+                dailyDuoTxt.text = "${rankingDiff[1]}"
+                dailyDuelTxt.textColor = ColorTemplate.rgb("#00005f")
+            }
+        }
+
+        when {
+            rankingDiff[2] < 0 -> {
+                dailyStandardTxt.text = "${rankingDiff[2]}"
+                dailyStandardTxt.textColor = ColorTemplate.rgb("#AA0000")
+            }
+            rankingDiff[2] > 0 -> {
+                dailyStandardTxt.text = "+ ${rankingDiff[2]}"
+                dailyStandardTxt.textColor = ColorTemplate.rgb("#008800")
+            }
+            else -> {
+                dailyStandardTxt.text = "${rankingDiff[2]}"
+                dailyStandardTxt.textColor = ColorTemplate.rgb("#00005f")
+            }
+        }
+
+        when {
+            rankingDiff[3] < 0 -> {
+                dailySoloTxt.text = "${rankingDiff[3]}"
+                dailySoloTxt.textColor = ColorTemplate.rgb("#AA0000")
+            }
+            rankingDiff[3] > 0 -> {
+                dailySoloTxt.text = "+ ${rankingDiff[3]}"
+                dailySoloTxt.textColor = ColorTemplate.rgb("#008800")
+            }
+            else -> {
+                dailySoloTxt.text = "${rankingDiff[3]}"
+                dailySoloTxt.textColor = ColorTemplate.rgb("#00005f")
+            }
+        }
+    }
+
+    /**
      * puts mmr on the line chart
      */
     @SuppressLint("SimpleDateFormat")
     //Warning suggests to use local time instead, this could cause problem when a users locale time changes to yesterday when travelling
     private fun addMmr(recentStamp: Timestamp) {
         for (i in recentStamp.rankingList.indices) {
-            val lastEntryDay = SimpleDateFormat("dd.MM.yy").format(Date(skillDataSetList[i].getEntryForXValue(recentStamp.day.toFloat(), recentStamp.getTotalShotPercentage()).x.toLong()))
-            if (recentStamp.date == lastEntryDay)
+            if (player.season.size == skillDataSetList[i].entryCount)
             //if last entry was on the same day, delete it
-                skillDataSetList[i].removeEntryByXValue(recentStamp.day.toFloat())
+                skillDataSetList[i].removeLast()
 
             skillDataSetList[i].addEntry(
                     Entry(recentStamp.time.toFloat(),
@@ -107,7 +180,8 @@ class GraphFragment : Fragment() {
     /**
      * puts all relevant data to the line charts
      */
-    fun addChartEntries(recentStamp: Timestamp, oldStamp: Timestamp) {
+    fun addChartEntries(player: Player, recentStamp: Timestamp, oldStamp: Timestamp) {
+        this.player = player
         //recalculate Axis scale
         shotpercChart.xAxis.axisMaximum = recentStamp.time.toFloat() + (86400000L * 1L).toFloat()
         skillChart.xAxis.axisMaximum = recentStamp.time.toFloat() + (86400000L * 1L).toFloat()
@@ -121,6 +195,7 @@ class GraphFragment : Fragment() {
             addTotalShotPercentage(recentStamp)
             addCurrentShotPercentage(recentStamp, oldStamp)
             addMmr(recentStamp)
+            updateDailyCard(recentStamp, oldStamp)
         }
         //refresh chart to draw updates
         shotpercChart.notifyDataSetChanged()
@@ -186,12 +261,16 @@ class GraphFragment : Fragment() {
                 PieEntry(recentStamp.assists / sum, "Assist%")
         ), "")
         balanceChart.setUsePercentValues(true)
-        balanceDataSet.colors = arrayListOf(ColorTemplate.rgb("#0000FF"), ColorTemplate.rgb("#00FF00"), ColorTemplate.rgb("#FF0000"))
+        balanceDataSet.colors = arrayListOf(ColorTemplate.rgb("#0000AA"), ColorTemplate.rgb("#00AA00"), ColorTemplate.rgb("#AA0000"))
         balanceChart.data = PieData(balanceDataSet)
         balanceChart.holeRadius = 0f
         balanceChart.setTransparentCircleAlpha(0)
         balanceChart.description.text = ""
         balanceDataSet.valueFormatter = PercentFormatter()
+
+        balanceChart.legend.isEnabled = false
+        balanceDataSet.valueTextColor = ColorTemplate.rgb("#FFFFFF")
+        balanceDataSet.valueTextSize = 13f
 
 
         //initalize ranking chart

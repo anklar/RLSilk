@@ -91,7 +91,6 @@ class Player(var id: String, var name: String, var platform: Int, var avatarUrl:
                             val newestSeason = TimestampMap(stamp)
                             season = newestSeason
                         } else {
-                            //seasons[key.toInt()]!!.put(stamp)
                             season.put(stamp)
                         }
                     }

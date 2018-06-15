@@ -104,6 +104,11 @@ class PlayerOverview : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    //to deactivated back button
+    override fun onBackPressed(){
+
+    }
+
 
     /**
      *
@@ -148,7 +153,7 @@ class PlayerOverview : AppCompatActivity() {
     private fun updateVisuals(stamp: Timestamp?) {
         if (stamp != null) {
             playerFragment.updateUI(stamp, this.player)
-            graphFragment.addChartEntries(stamp, player.season.getLastStampBefore(stamp))
+            graphFragment.addChartEntries(player, stamp, player.season.getLastStampBefore(stamp))
         }
     }
 

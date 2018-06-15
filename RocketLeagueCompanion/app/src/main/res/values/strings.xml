@@ -30,6 +30,16 @@
     <string name="ps4">PS4</string>
     <string name="xbox">XBox</string>
     <string name="noConnection">You are not connected to the Internet</string>
+    <string name="daily_stats">Daily Stats</string>
+    <string name="shotPercLable">SH%</string>
+    <string name="dailyGoalsLable">Goals:</string>
+    <string name="dailyShots">Shots:</string>
+    <string name="dailyDuel">Duel:</string>
+    <string name="dailyDuo">Duo:</string>
+    <string name="dailyStandard">Standard:</string>
+    <string name="dailySolo">Solo:</string>
+    <string name="perc0">0%</string>
+    <string name="_0">0</string>
 
 
 </resources>

@@ -47,11 +47,225 @@
             android:layout_weight="0.6"
             android:backgroundTint="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/shotpercChart"
+            app:layout_constraintEnd_toStartOf="@+id/cardView"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="@+id/shotpercChart"
             app:layout_constraintTop_toBottomOf="@+id/skillChart">
 
         </com.github.mikephil.charting.charts.PieChart>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/balanceChart"
+            app:layout_constraintEnd_toEndOf="@+id/shotpercChart"
+            app:layout_constraintHorizontal_weight="0.5"
+            app:layout_constraintStart_toEndOf="@+id/balanceChart"
+            app:layout_constraintTop_toBottomOf="@+id/skillChart">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/dailyLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/daily_stats"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/dailyShotPercLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/shotPercLable"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyGoalsLabel"
+                    app:layout_constraintEnd_toStartOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dailyLabel" />
+
+                <TextView
+                    android:id="@+id/dailyGoalsLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/dailyGoalsLable"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyShotsLabel"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/dailyShotPercLabel" />
+
+                <TextView
+                    android:id="@+id/dailyShotsLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/dailyShots"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyDuelLable"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/dailyGoalsLabel" />
+
+                <TextView
+                    android:id="@+id/dailyDuelLable"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/dailyDuel"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyDuoLable"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/dailyShotsLabel" />
+
+                <TextView
+                    android:id="@+id/dailyDuoLable"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/dailyDuo"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyStandardLabel"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/dailyDuelLable" />
+
+
+                <TextView
+                    android:id="@+id/dailyStandardLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/dailyStandard"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailySoloLabel"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/dailyDuoLable" />
+
+                <TextView
+                    android:id="@+id/dailySoloLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:text="@string/dailySolo"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/dailyStandardLabel" />
+
+                <TextView
+                    android:id="@+id/dailyShotPercTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="end"
+                    android:text="@string/perc0"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyGoalsLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="0.6"
+                    app:layout_constraintStart_toEndOf="@+id/dailyShotPercLabel"
+                    app:layout_constraintTop_toTopOf="@+id/dailyShotPercLabel" />
+
+                <TextView
+                    android:id="@+id/dailyGoalsTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="end"
+                    android:text="@string/_0"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyShotsLabel"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintHorizontal_weight="0.6"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintTop_toTopOf="@+id/dailyGoalsLabel" />
+
+                <TextView
+                    android:id="@+id/dailyShotsTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="end"
+                    android:text="@string/_0"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toBottomOf="@+id/dailyShotsLabel"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintHorizontal_weight="0.6"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintTop_toTopOf="@+id/dailyShotsLabel" />
+
+                <TextView
+                    android:id="@+id/dailyDuelTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="end"
+                    android:text="@string/_0"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyDuoLable"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintHorizontal_weight="0.6"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintTop_toBottomOf="@+id/dailyShotsLabel" />
+
+                <TextView
+                    android:id="@+id/dailyDuoTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="end"
+                    android:text="@string/_0"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailyStandardLabel"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintHorizontal_weight="0.6"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintTop_toTopOf="@+id/dailyDuoLable" />
+
+                <TextView
+                    android:id="@+id/dailyStandardTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="end"
+                    android:text="@string/_0"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toTopOf="@+id/dailySoloLabel"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintHorizontal_weight="0.6"
+                    app:layout_constraintStart_toStartOf="@+id/dailyGoalsTxt"
+                    app:layout_constraintTop_toTopOf="@+id/dailyStandardLabel" />
+
+                <TextView
+                    android:id="@+id/dailySoloTxt"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="end"
+                    android:text="@string/_0"
+                    android:textColor="@color/colorPrimaryDark"
+                    app:layout_constraintBottom_toBottomOf="@+id/dailySoloLabel"
+                    app:layout_constraintEnd_toEndOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintHorizontal_weight="0.6"
+                    app:layout_constraintStart_toStartOf="@+id/dailyShotPercTxt"
+                    app:layout_constraintTop_toTopOf="@+id/dailySoloLabel" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
     </android.support.constraint.ConstraintLayout>
 
 

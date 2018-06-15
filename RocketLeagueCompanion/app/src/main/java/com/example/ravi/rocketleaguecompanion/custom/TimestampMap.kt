@@ -6,6 +6,7 @@ import java.util.*
 class TimestampMap : TreeMap<Int, Timestamp>, Serializable {
     constructor(item: Timestamp) : super() {
         this[0] = item
+        item.time = item.time -86400000
     }
 
     constructor() : super()
