@@ -105,7 +105,7 @@ class PlayerOverview : AppCompatActivity() {
     }
 
     //to deactivated back button
-    override fun onBackPressed(){
+    override fun onBackPressed() {
 
     }
 
@@ -231,12 +231,12 @@ class PlayerOverview : AppCompatActivity() {
 
         }
         if (generateDummyStats) {
-            Thread({
+            Thread {
                 for (i in 0..10) {
                     requestPlayerStats()
                     sleep(5000)
                 }
-            }).start()
+            }.start()
         } else {
             fixedRateTimer(name = "requestLoop", initialDelay = 0, period = 42000) {
                 requestPlayerStats()

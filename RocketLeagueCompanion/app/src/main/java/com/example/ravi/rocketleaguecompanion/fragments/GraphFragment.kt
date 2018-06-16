@@ -130,31 +130,31 @@ class GraphFragment : Fragment() {
 
         when {
             rankingDiff[2] < 0 -> {
-                dailyStandardTxt.text = "${rankingDiff[2]}"
-                dailyStandardTxt.textColor = ColorTemplate.rgb("#AA0000")
+                dailySoloTxt.text = "${rankingDiff[2]}"
+                dailySoloTxt.textColor = ColorTemplate.rgb("#AA0000")
             }
             rankingDiff[2] > 0 -> {
-                dailyStandardTxt.text = "+ ${rankingDiff[2]}"
-                dailyStandardTxt.textColor = ColorTemplate.rgb("#008800")
+                dailySoloTxt.text = "+ ${rankingDiff[2]}"
+                dailySoloTxt.textColor = ColorTemplate.rgb("#008800")
             }
             else -> {
-                dailyStandardTxt.text = "${rankingDiff[2]}"
-                dailyStandardTxt.textColor = ColorTemplate.rgb("#00005f")
+                dailySoloTxt.text = "${rankingDiff[2]}"
+                dailySoloTxt.textColor = ColorTemplate.rgb("#00005f")
             }
         }
 
         when {
             rankingDiff[3] < 0 -> {
-                dailySoloTxt.text = "${rankingDiff[3]}"
-                dailySoloTxt.textColor = ColorTemplate.rgb("#AA0000")
+                dailyStandardTxt.text = "${rankingDiff[3]}"
+                dailyStandardTxt.textColor = ColorTemplate.rgb("#AA0000")
             }
             rankingDiff[3] > 0 -> {
-                dailySoloTxt.text = "+ ${rankingDiff[3]}"
-                dailySoloTxt.textColor = ColorTemplate.rgb("#008800")
+                dailyStandardTxt.text = "+ ${rankingDiff[3]}"
+                dailyStandardTxt.textColor = ColorTemplate.rgb("#008800")
             }
             else -> {
-                dailySoloTxt.text = "${rankingDiff[3]}"
-                dailySoloTxt.textColor = ColorTemplate.rgb("#00005f")
+                dailyStandardTxt.text = "${rankingDiff[3]}"
+                dailyStandardTxt.textColor = ColorTemplate.rgb("#00005f")
             }
         }
     }

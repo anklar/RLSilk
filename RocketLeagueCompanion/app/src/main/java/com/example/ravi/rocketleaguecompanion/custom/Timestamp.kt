@@ -21,10 +21,10 @@ class Timestamp(var time: Long, val rankingList: Array<Ranking>,
      */
     fun getRankingDifferential(old: Timestamp): Array<Int> {
         return arrayOf(
-                old.rankingList[0].mmr - this.rankingList[0].mmr,
-                old.rankingList[1].mmr - this.rankingList[1].mmr,
-                old.rankingList[2].mmr - this.rankingList[2].mmr,
-                old.rankingList[3].mmr - this.rankingList[3].mmr
+                this.rankingList[0].mmr - old.rankingList[0].mmr,
+                this.rankingList[1].mmr - old.rankingList[1].mmr,
+                this.rankingList[2].mmr - old.rankingList[2].mmr,
+                this.rankingList[3].mmr - old.rankingList[3].mmr
         )
     }
 
