@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -25,7 +26,7 @@ import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.lang.Thread.sleep
 import java.util.*
-import kotlin.concurrent.fixedRateTimer
+import kotlin.concurrent.schedule
 
 class PlayerOverview : AppCompatActivity() {
 
@@ -35,6 +36,7 @@ class PlayerOverview : AppCompatActivity() {
     private val playerFragment = PlayerFragment.newInstance()
     private val graphFragment = GraphFragment.newInstance()
     private val generateDummyStats = false
+    private var timer = Timer(true)
 
     //vars for dummy values
     private var dayCount = 0
@@ -79,7 +81,7 @@ class PlayerOverview : AppCompatActivity() {
         super.onStart()
         Thread {
             sleep(2000)
-            runOnUiThread({ drawLoadedData() })
+            runOnUiThread { drawLoadedData() }
         }.start()
 
 
@@ -106,7 +108,6 @@ class PlayerOverview : AppCompatActivity() {
 
     //to deactivated back button
     override fun onBackPressed() {
-
     }
 
 
@@ -129,7 +130,13 @@ class PlayerOverview : AppCompatActivity() {
                     } catch (error: JSONException) {
                         error.printStackTrace()
                     }
-                }, { android.util.Log.e("upPlStat", "Coudln't update Player stats") }) {
+                },
+                {
+                    android.util.Log.e("upPlStat", "Coudln't update Player stats")
+                    Toast.makeText(this,"API seems to be down, restart app to try again later",Toast.LENGTH_LONG).show()
+                    timer.cancel()
+                    timer.purge()
+                }) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val params = HashMap<String, String>()
@@ -238,7 +245,7 @@ class PlayerOverview : AppCompatActivity() {
                 }
             }.start()
         } else {
-            fixedRateTimer(name = "requestLoop", initialDelay = 0, period = 42000) {
+            timer.schedule(500L,42000L){
                 requestPlayerStats()
             }
         }
@@ -247,7 +254,6 @@ class PlayerOverview : AppCompatActivity() {
     inner class PagerAdapter(fm: FragmentManager, private var tabCount: Int) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment? {
-
             return when (position) {
                 0 -> playerFragment
                 1 -> graphFragment
